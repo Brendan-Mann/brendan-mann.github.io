@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Washington State Environmental Mapping — Brendan Mann</title>
+  <meta name="description" content="Five-map series covering forest cover, fire and drought risk, protected lands, stream discharge, and Bald Eagle observations across Washington State.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Lora:wght@400;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Color tokens (mirror index.html) ── */
+    :root {
+      --bg0:    #fbf1c7;
+      --bg0h:   #f9f5d7;
+      --bg1:    #ebdbb2;
+      --bg2:    #d5c4a1;
+      --bg3:    #bdae93;
+      --fg:     #3c3836;
+      --fg2:    #665c54;
+      --fg3:    #928374;
+      --accent: #b57614;
+      --green:  #79740e;
+      --blue:   #076678;
+    }
+    html.dark {
+      --bg0:    #1d2021;
+      --bg0h:   #282828;
+      --bg1:    #3c3836;
+      --bg2:    #504945;
+      --bg3:    #665c54;
+      --fg:     #ebdbb2;
+      --fg2:    #d5c4a1;
+      --fg3:    #bdae93;
+      --accent: #d79921;
+      --green:  #b8bb26;
+      --blue:   #83a598;
+    }
+
+    html, body {
+      background: var(--bg0);
+      color: var(--fg);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ── Topbar ── */
+    #topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 48px;
+      background: var(--bg0h);
+      border-bottom: 1px solid var(--bg2);
+      padding: 0 2.5rem;
+      display: flex;
+      align-items: center;
+      z-index: 100;
+    }
+    .site-mark {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      margin-right: 2rem;
+      white-space: nowrap;
+    }
+    .nav-link {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--fg3);
+      text-decoration: none;
+      padding: 0 1rem;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .nav-link:hover { color: var(--fg); }
+    .nav-link.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-left: auto;
+    }
+    .icon-link {
+      color: var(--fg2);
+      font-size: 18px;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .icon-link:hover { color: var(--accent); }
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--fg2);
+      border-radius: 3px;
+      color: var(--fg2);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      padding: 4px 9px;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* ── Page layout ── */
+    main {
+      padding-top: 48px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding-left: 2.5rem;
+      padding-right: 2.5rem;
+    }
+
+    /* ── Project header ── */
+    .project-header {
+      padding: 3.5rem 0 2.5rem;
+      border-bottom: 1px solid var(--bg1);
+    }
+    .project-eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+    .project-title {
+      font-family: 'Lora', serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 600;
+      color: var(--fg);
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+    .project-meta {
+      font-size: 13px;
+      color: var(--fg3);
+      font-family: 'IBM Plex Mono', monospace;
+      margin-bottom: 1rem;
+    }
+    .project-desc {
+      font-size: 15px;
+      color: var(--fg2);
+      max-width: 680px;
+      line-height: 1.7;
+    }
+
+    /* ── Tags ── */
+    .tag {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 3px;
+      background: var(--bg1);
+      color: var(--fg2);
+      margin: 2px 3px 2px 0;
+      letter-spacing: 0.03em;
+    }
+    .tag.green  { background: #d9e8a0; color: #3d4a00; }
+    .tag.blue   { background: #c4dde3; color: #02414e; }
+    .tag.orange { background: #f2d9b8; color: #6b2d00; }
+    html.dark .tag        { background: var(--bg2); color: var(--fg2); }
+    html.dark .tag.green  { background: #3d4a00; color: #d9e8a0; }
+    html.dark .tag.blue   { background: #02414e; color: #c4dde3; }
+    html.dark .tag.orange { background: #4a2500; color: #f2c98a; }
+
+    /* ── Section label ── */
+    .section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-top: 2.5rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--bg2);
+    }
+
+    /* ── Accordion ── */
+    .accordion { display: flex; flex-direction: column; gap: 0; }
+
+    .accordion-item {
+      border: 1px solid var(--bg2);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 0.6rem;
+      background: var(--bg0h);
+    }
+
+    .accordion-trigger {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s;
+    }
+    .accordion-trigger:hover { background: var(--bg1); }
+    .accordion-trigger.open  { background: var(--bg1); }
+
+    .acc-number {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+      flex-shrink: 0;
+      width: 2rem;
+    }
+    .acc-title-wrap { flex: 1; }
+    .acc-title {
+      font-family: 'Lora', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--fg);
+      display: block;
+    }
+    .acc-subtitle {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--fg3);
+      letter-spacing: 0.03em;
+    }
+    .acc-chevron {
+      font-size: 18px;
+      color: var(--fg3);
+      transition: transform 0.25s;
+      flex-shrink: 0;
+    }
+    .accordion-trigger.open .acc-chevron { transform: rotate(180deg); }
+
+    .accordion-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+    }
+    .accordion-panel.open { max-height: 900px; }
+
+    .panel-image {
+      border-top: 1px solid var(--bg2);
+      background: var(--bg1);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 1.25rem;
+    }
+    .panel-image img {
+      width: 100%;
+      height: auto;
+      border-radius: 2px;
+      display: block;
+    }
+
+    .panel-text {
+      border-top: 1px solid var(--bg2);
+      border-left: 1px solid var(--bg2);
+      padding: 1.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .method-block h4 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+    }
+    .method-block p {
+      font-size: 13px;
+      color: var(--fg2);
+      line-height: 1.65;
+    }
+
+    /* ── Footer ── */
+    footer {
+      padding: 2rem 0;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--fg3);
+      letter-spacing: 0.04em;
+      border-top: 1px solid var(--bg1);
+      margin-top: 3rem;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      main { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .accordion-panel { grid-template-columns: 1fr; }
+      .panel-text { border-left: none; border-top: 1px solid var(--bg2); }
+      #topbar { padding: 0 1.25rem; }
+      .site-mark { margin-right: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav id="topbar">
+    <a class="site-mark" href="../index.html">B. ▴ GIS</a>
+    <div style="display:flex;flex:1;">
+      <a class="nav-link active" href="../index.html">Home</a>
+    </div>
+    <div class="topbar-right">
+      <a class="icon-link" href="https://github.com/Brendan-Mann" target="_blank" rel="noopener" aria-label="GitHub">
+        <i class="ti ti-brand-github"></i>
+      </a>
+      <a class="icon-link" href="https://linkedin.com/in/YOUR_LINKEDIN" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <i class="ti ti-brand-linkedin"></i>
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Toggle dark mode">◐ dark</button>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         PROJECT HEADER — edit projectMeta in <script> below
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="project-header">
+      <p class="project-eyebrow">GIS 309 — Thematic Mapping</p>
+      <h1 class="project-title">Washington State<br>Environmental Mapping</h1>
+      <p class="project-meta">Western Illinois University &nbsp;·&nbsp; May 2026</p>
+      <p class="project-desc">
+        A five-map thematic series exploring environmental patterns across Washington State.
+        Each map demonstrates a distinct cartographic technique — from bivariate choropleth
+        to proportional symbols — applied to real environmental datasets.
+      </p>
+      <div style="margin-top:1rem;">
+        <span class="tag green">QGIS</span>
+        <span class="tag green">ArcGIS Pro</span>
+        <span class="tag blue">NLCD 2021</span>
+        <span class="tag blue">GBIF</span>
+        <span class="tag blue">USFS</span>
+        <span class="tag blue">USGS</span>
+        <span class="tag blue">USDM</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         MAPS ACCORDION — edit the maps array in <script> below.
+         Image paths are relative to the projects/ folder, so
+         they point to ../assets/img/
+    ═══════════════════════════════════════════════════════════ -->
+    <p class="section-label">Maps</p>
+    <div class="accordion" id="accordion"></div>
+
+    <footer>Built with QGIS, plain HTML, and strong opinions about color palettes.</footer>
+  </main>
+
+  <script>
+    // ════════════════════════════════════════════════════════════════
+    //  MAP DATA — edit this array to update or add maps.
+    //  To add a new map: copy one object, paste at the end of the
+    //  array (before the closing ]), and fill in your data.
+    // ════════════════════════════════════════════════════════════════
+    const maps = [
+      {
+        number: "01",
+        title:  "Forest Cover by County",
+        type:   "Univariate Choropleth",
+        img:    "../assets/img/washington-choropleth.png",
+        methods: [
+          {
+            heading: "Data Source",
+            text: "National Land Cover Database (NLCD) 2021, Multi-Resolution Land Characteristics Consortium (MRLC). Deciduous, Evergreen, and Mixed Forest classes were reclassified and aggregated to county level using Zonal Statistics."
+          },
+          {
+            heading: "Classification",
+            text: "Natural Breaks (Jenks). Forest cover in Washington is bimodally distributed across the Cascade Range — heavily forested western counties vs. semi-arid eastern plateau. Jenks minimizes within-class variance and maximizes between-class differences, making it well-suited for this dataset."
+          },
+          {
+            heading: "Design",
+            text: "Yellow-Green sequential ramp. Lighter values represent lower forest cover; darker values represent higher cover. Green was chosen for its intuitive association with forested landscapes."
+          },
+        ]
+      },
+      {
+        number: "02",
+        title:  "Fire and Drought Risk",
+        type:   "Bivariate Choropleth",
+        img:    "../assets/img/washington-bivariate.png",
+        methods: [
+          {
+            heading: "Data Sources",
+            text: "USFS Wildfire Risk to Communities — Wildfire Hazard Potential (Image Service), aggregated to counties via Zonal Statistics. U.S. Drought Monitor (USDM), May 5, 2026, joined to counties via Spatial Join (mean)."
+          },
+          {
+            heading: "Classification",
+            text: "3×3 bivariate equal-interval classification. Each variable was independently classed into Low, Medium, and High, then combined into a 3×3 color matrix to reveal counties where both environmental stressors are simultaneously elevated."
+          },
+          {
+            heading: "Design",
+            text: "Tan-purple-brown bivariate palette. Increasing fire hazard shifts toward yellow-tan; increasing drought severity shifts toward purple. Counties where both variables are high converge toward brown."
+          },
+        ]
+      },
+      {
+        number: "03",
+        title:  "Protected Land Area",
+        type:   "Graduated Symbol",
+        img:    "../assets/img/washington-graduated.png",
+        methods: [
+          {
+            heading: "Data Source",
+            text: "PAD-US 4.0, USGS Gap Analysis Project. Total protected acreage per county calculated using the Summarize Within tool in ArcGIS Pro, summing GIS_Acres across each county boundary."
+          },
+          {
+            heading: "Classification",
+            text: "Manual classification with five round-number breaks: <100K; 100K–500K; 500K–1M; 1M–2M; >2M acres. Manual breaks were chosen to prioritize legibility and interpretability over statistical optimization."
+          },
+          {
+            heading: "Design",
+            text: "Single yellow hue scaled by symbol size. Yellow matches the Washington State flag palette. Size is the sole visual variable, keeping color available for potential future overlays."
+          },
+        ]
+      },
+      {
+        number: "04",
+        title:  "River and Stream Discharge",
+        type:   "Proportional Symbol",
+        img:    "../assets/img/washington-proportional.png",
+        methods: [
+          {
+            heading: "Data Source",
+            text: "NOAA/NWS Live Stream Gauges accessed via USGS Water Data (waterdata.usgs.gov), May 12, 2026. Discharge values represent real-time flow in cubic feet per second (cfs) at active gauging stations."
+          },
+          {
+            heading: "Classification",
+            text: "No classification applied. Circle area is scaled mathematically proportional to discharge value. Gauging stations on the Columbia and Snake Rivers exceeding 50,000 cfs were excluded — their inclusion compresses all other symbols into near-identical sizes."
+          },
+          {
+            heading: "Design",
+            text: "Single blue hue matching the Washington State flag. Proportional (not graduated) symbols preserve the continuous nature of discharge data without imposing artificial class breaks."
+          },
+        ]
+      },
+      {
+        number: "05",
+        title:  "Bald Eagle Observations",
+        type:   "Dot Density",
+        img:    "../assets/img/washington-dotdensity.png",
+        methods: [
+          {
+            heading: "Data Source",
+            text: "Global Biodiversity Information Facility (GBIF), Bald Eagle (Haliaeetus leucocephalus) occurrence records, accessed May 12, 2026. Records downloaded for the Pacific Northwest, imported as XY point data, clipped to the Washington State boundary, and spatially joined to ACS Population tract boundaries."
+          },
+          {
+            heading: "Classification",
+            text: "1 dot = 50 observations. This value was calibrated to produce readable density variation across the state — low enough to show clustering in the Puget Sound region, high enough to avoid overplotting in the highest-density tracts."
+          },
+          {
+            heading: "Design",
+            text: "Single green hue matching the Washington State flag. Dot density was chosen over choropleth to avoid the implicit normalization by county area — it preserves the geographic clustering signal in the raw observation data."
+          },
+        ]
+      },
+
+      // ── TEMPLATE — copy, uncomment, and fill in to add a map ──
+      // {
+      //   number: "06",
+      //   title:  "Map Title",
+      //   type:   "Map Type (e.g. Choropleth)",
+      //   img:    "../assets/img/your-image.png",
+      //   methods: [
+      //     { heading: "Data Source", text: "..." },
+      //     { heading: "Classification", text: "..." },
+      //     { heading: "Design", text: "..." },
+      //   ]
+      // },
+      // ──────────────────────────────────────────────────────────
+    ];
+
+
+    // ════════════════════════════════════════════════════════════════
+    //  RENDERER — no edits needed below this line
+    // ════════════════════════════════════════════════════════════════
+
+    const accordion = document.getElementById('accordion');
+
+    accordion.innerHTML = maps.map((m, i) => `
+      <div class="accordion-item">
+        <button class="accordion-trigger" id="trigger-${i}" aria-expanded="false"
+                aria-controls="panel-${i}" onclick="toggle(${i})">
+          <span class="acc-number">${m.number}</span>
+          <span class="acc-title-wrap">
+            <span class="acc-title">${m.title}</span>
+            <span class="acc-subtitle">${m.type}</span>
+          </span>
+          <i class="ti ti-chevron-down acc-chevron" aria-hidden="true"></i>
+        </button>
+        <div class="accordion-panel" id="panel-${i}" role="region" aria-labelledby="trigger-${i}">
+          <div class="panel-image">
+            <img src="${m.img}" alt="${m.title}" loading="lazy">
+          </div>
+          <div class="panel-text">
+            ${m.methods.map(b => `
+              <div class="method-block">
+                <h4>${b.heading}</h4>
+                <p>${b.text}</p>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    function toggle(i) {
+      const trigger = document.getElementById(`trigger-${i}`);
+      const panel   = document.getElementById(`panel-${i}`);
+      const isOpen  = trigger.classList.contains('open');
+
+      // close all
+      document.querySelectorAll('.accordion-trigger').forEach(t => {
+        t.classList.remove('open');
+        t.setAttribute('aria-expanded', 'false');
+      });
+      document.querySelectorAll('.accordion-panel').forEach(p => p.classList.remove('open'));
+
+      // open clicked if it was closed
+      if (!isOpen) {
+        trigger.classList.add('open');
+        trigger.setAttribute('aria-expanded', 'true');
+        panel.classList.add('open');
+      }
+    }
+
+    // ── Theme toggle ─────────────────────────────────────────────
+    const btn = document.getElementById('themeBtn');
+    function applyTheme(dark) {
+      document.documentElement.classList.toggle('dark', dark);
+      btn.textContent = dark ? '◐ light' : '◐ dark';
+    }
+    btn.addEventListener('click', () => {
+      const isDark = !document.documentElement.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      applyTheme(isDark);
+    });
+    applyTheme(localStorage.getItem('theme') === 'dark');
+  </script>
+
+</body>
+</html>
