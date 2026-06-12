@@ -10,51 +10,6 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Lora:wght@400;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg0: #fbf1c7; --bg0h: #f9f5d7; --bg1: #ebdbb2; --bg2: #d5c4a1;
-      --bg3: #bdae93; --fg: #3c3836; --fg2: #665c54; --fg3: #928374;
-      --accent: #b57614; --green: #79740e; --blue: #076678;
-    }
-    html.dark {
-      --bg0: #1d2021; --bg0h: #282828; --bg1: #3c3836; --bg2: #504945;
-      --bg3: #665c54; --fg: #ebdbb2; --fg2: #d5c4a1; --fg3: #bdae93;
-      --accent: #d79921; --green: #b8bb26; --blue: #83a598;
-    }
-    html, body { background: var(--bg0); color: var(--fg); font-family: 'IBM Plex Sans', sans-serif; font-size: 16px; line-height: 1.6; }
-    #topbar { position: fixed; top: 0; left: 0; right: 0; height: 48px; background: var(--bg0h); border-bottom: 1px solid var(--bg2); padding: 0 2.5rem; display: flex; align-items: center; z-index: 100; }
-    .site-mark { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; color: var(--accent); letter-spacing: 0.04em; text-decoration: none; margin-right: 2rem; white-space: nowrap; }
-    .nav-link { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--fg3); text-decoration: none; padding: 0 1rem; height: 48px; display: flex; align-items: center; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s, border-color 0.15s; }
-    .nav-link:hover { color: var(--fg); }
-    .nav-link.active { color: var(--accent); border-bottom-color: var(--accent); }
-    .topbar-right { display: flex; align-items: center; gap: 16px; margin-left: auto; }
-    .icon-link { color: var(--fg2); font-size: 18px; text-decoration: none; transition: color 0.15s; }
-    .icon-link:hover { color: var(--accent); }
-    .theme-toggle { background: none; border: 1px solid var(--fg2); border-radius: 3px; color: var(--fg2); font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 4px 9px; cursor: pointer; letter-spacing: 0.04em; transition: color 0.15s, border-color 0.15s; }
-    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
-
-    main { padding-top: 48px; max-width: 1100px; margin: 0 auto; padding-left: 2.5rem; padding-right: 2.5rem; }
-
-    .project-header { padding: 3.5rem 0 2.5rem; border-bottom: 1px solid var(--bg1); }
-    .project-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.6rem; }
-    .project-title { font-family: 'Lora', serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 600; color: var(--fg); line-height: 1.2; margin-bottom: 0.75rem; }
-    .project-meta { font-size: 13px; color: var(--fg3); font-family: 'IBM Plex Mono', monospace; margin-bottom: 1rem; }
-    .project-desc { font-size: 15px; color: var(--fg2); max-width: 680px; line-height: 1.7; }
-
-    .tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 2px 8px; border-radius: 3px; background: var(--bg1); color: var(--fg2); margin: 2px 3px 2px 0; letter-spacing: 0.03em; }
-    .tag.green  { background: #d9e8a0; color: #3d4a00; }
-    .tag.blue   { background: #c4dde3; color: #02414e; }
-    .tag.orange { background: #f2d9b8; color: #6b2d00; }
-    .tag.red    { background: #f2cbb8; color: #6b1a00; }
-    html.dark .tag        { background: var(--bg2); color: var(--fg2); }
-    html.dark .tag.green  { background: #3d4a00; color: #d9e8a0; }
-    html.dark .tag.blue   { background: #02414e; color: #c4dde3; }
-    html.dark .tag.orange { background: #4a2500; color: #f2c98a; }
-    html.dark .tag.red    { background: #4a1000; color: #f2c0a8; }
-
-    .section-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; padding-top: 2.5rem; }
-    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--bg2); }
-
     /* ── Single map display ── */
     .map-display {
       border: 1px solid var(--bg2);
@@ -114,22 +69,27 @@
       .method-block { border-right: none; }
     }
   </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Lora:wght@400;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
   <nav id="topbar">
-    <a class="site-mark" href="../index.html">B. ▴ GIS</a>
+    <a class="site-mark" href="../index.html">◈ B.MANN</a>
     <div style="display:flex;flex:1;">
       <a class="nav-link active" href="../index.html">Home</a>
     </div>
     <div class="topbar-right">
       <a class="icon-link" href="https://github.com/Brendan-Mann" target="_blank" rel="noopener" aria-label="GitHub"><i class="ti ti-brand-github"></i></a>
-      <a class="icon-link" href="https://linkedin.com/in/YOUR_LINKEDIN" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="ti ti-brand-linkedin"></i></a>
+      <a class="icon-link" href="https://linkedin.com/in/brendan-mann-456452157" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="ti ti-brand-linkedin"></i></a>
       <button class="theme-toggle" id="themeBtn" aria-label="Toggle dark mode">◐ dark</button>
     </div>
   </nav>
 
-  <main>
+  <main class="project-main">
     <div class="project-header">
       <p class="project-eyebrow">GIS 309 — Thematic Mapping</p>
       <h1 class="project-title">Bombing Missions of<br>the Vietnam War</h1>
@@ -178,7 +138,7 @@
       </div>
     </div>
 
-    <footer>Built with QGIS, plain HTML, and strong opinions about color palettes.</footer>
+    <footer>Brendan Mann &middot; St. Louis, MO &middot; 2026</footer>
   </main>
 
   <div id="lightbox" role="dialog" aria-modal="true" aria-label="Map fullscreen view" onclick="closeLightbox(event)">
