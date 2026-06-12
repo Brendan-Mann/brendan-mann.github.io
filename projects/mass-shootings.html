@@ -3,221 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Brendan Mann — GIS Portfolio</title>
-  <meta name="description" content="GIS analyst, cartographer, and remote sensing specialist based in St. Louis, MO.">
+  <title>Mass Shootings in America — Brendan Mann</title>
+  <meta name="description" content="Four-map comparison of U.S. mass shooting and mass killing datasets, illustrating how definitional differences produce dramatically different spatial patterns.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Lora:wght@400;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    /* ── Color tokens ── */
     :root {
-      --bg0:    #fbf1c7;
-      --bg0h:   #f9f5d7;
-      --bg1:    #ebdbb2;
-      --bg2:    #d5c4a1;
-      --bg3:    #bdae93;
-      --fg:     #3c3836;
-      --fg2:    #665c54;
-      --fg3:    #928374;
-      --accent: #b57614;
-      --green:  #79740e;
-      --blue:   #076678;
+      --bg0: #fbf1c7; --bg0h: #f9f5d7; --bg1: #ebdbb2; --bg2: #d5c4a1;
+      --bg3: #bdae93; --fg: #3c3836; --fg2: #665c54; --fg3: #928374;
+      --accent: #b57614; --green: #79740e; --blue: #076678;
     }
     html.dark {
-      --bg0:    #1d2021;
-      --bg0h:   #282828;
-      --bg1:    #3c3836;
-      --bg2:    #504945;
-      --bg3:    #665c54;
-      --fg:     #ebdbb2;
-      --fg2:    #d5c4a1;
-      --fg3:    #bdae93;
-      --accent: #d79921;
-      --green:  #b8bb26;
-      --blue:   #83a598;
+      --bg0: #1d2021; --bg0h: #282828; --bg1: #3c3836; --bg2: #504945;
+      --bg3: #665c54; --fg: #ebdbb2; --fg2: #d5c4a1; --fg3: #bdae93;
+      --accent: #d79921; --green: #b8bb26; --blue: #83a598;
     }
-
-    /* ── Base ── */
-    html, body {
-      background: var(--bg0);
-      color: var(--fg);
-      font-family: 'IBM Plex Sans', sans-serif;
-      font-size: 16px;
-      line-height: 1.6;
-      scroll-behavior: smooth;
-    }
-
-    /* ── Topbar ── */
-    #topbar {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 48px;
-      background: var(--bg0h);
-      border-bottom: 1px solid var(--bg2);
-      padding: 0 2.5rem;
-      display: flex;
-      align-items: center;
-      z-index: 100;
-      transition: background 0.2s;
-    }
-    .site-mark {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--accent);
-      letter-spacing: 0.04em;
-      margin-right: 2rem;
-      white-space: nowrap;
-      text-decoration: none;
-    }
-    .nav-links { display: flex; flex: 1; }
-    .nav-link {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: var(--fg3);
-      text-decoration: none;
-      padding: 0 1rem;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -1px;
-      transition: color 0.15s, border-color 0.15s;
-    }
+    html, body { background: var(--bg0); color: var(--fg); font-family: 'IBM Plex Sans', sans-serif; font-size: 16px; line-height: 1.6; }
+    #topbar { position: fixed; top: 0; left: 0; right: 0; height: 48px; background: var(--bg0h); border-bottom: 1px solid var(--bg2); padding: 0 2.5rem; display: flex; align-items: center; z-index: 100; }
+    .site-mark { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; color: var(--accent); letter-spacing: 0.04em; text-decoration: none; margin-right: 2rem; white-space: nowrap; }
+    .nav-link { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--fg3); text-decoration: none; padding: 0 1rem; height: 48px; display: flex; align-items: center; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s, border-color 0.15s; }
     .nav-link:hover { color: var(--fg); }
     .nav-link.active { color: var(--accent); border-bottom-color: var(--accent); }
-    .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-left: auto;
-    }
-    .icon-link {
-      color: var(--fg2);
-      font-size: 18px;
-      line-height: 1;
-      text-decoration: none;
-      transition: color 0.15s;
-    }
+    .topbar-right { display: flex; align-items: center; gap: 16px; margin-left: auto; }
+    .icon-link { color: var(--fg2); font-size: 18px; text-decoration: none; transition: color 0.15s; }
     .icon-link:hover { color: var(--accent); }
-    .theme-toggle {
-      background: none;
-      border: 1px solid var(--fg2);
-      border-radius: 3px;
-      color: var(--fg2);
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 10px;
-      padding: 4px 9px;
-      cursor: pointer;
-      letter-spacing: 0.04em;
-      transition: color 0.15s, border-color 0.15s;
-    }
+    .theme-toggle { background: none; border: 1px solid var(--fg2); border-radius: 3px; color: var(--fg2); font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 4px 9px; cursor: pointer; letter-spacing: 0.04em; transition: color 0.15s, border-color 0.15s; }
     .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
-
-    /* ── Layout ── */
-    main { padding-top: 48px; }
-    section {
-      padding: 5rem 10vw;
-      border-bottom: 1px solid var(--bg1);
-    }
-
-    /* ── Section label ── */
-    .section-label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .section-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--bg2);
-    }
-
-    /* ── Hero ── */
-    #hero {
-      position: relative;
-      overflow: hidden;
-      min-height: 420px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding-bottom: 4rem;
-    }
-    #topo-bg {
-      position: absolute;
-      inset: 0; width: 100%; height: 100%;
-      opacity: 0.18;
-    }
-    .hero-eyebrow {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 11px;
-      color: var(--accent);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 0.6rem;
-      position: relative;
-    }
-    .hero-title {
-      font-family: 'Lora', serif;
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      font-weight: 600;
-      color: var(--fg);
-      line-height: 1.15;
-      margin-bottom: 1rem;
-      position: relative;
-    }
-    .hero-sub {
-      font-size: 15px;
-      color: var(--fg2);
-      max-width: 560px;
-      line-height: 1.7;
-      position: relative;
-    }
-
-    /* ── About ── */
-    .about-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 2rem;
-    }
-    .about-block h3 {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.09em;
-      text-transform: uppercase;
-      color: var(--fg3);
-      margin-bottom: 0.5rem;
-    }
-    .about-block p {
-      font-size: 14px;
-      color: var(--fg2);
-      line-height: 1.65;
-    }
-
-    /* ── Tags ── */
-    .tag {
-      display: inline-block;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 10px;
-      padding: 2px 8px;
-      border-radius: 3px;
-      background: var(--bg1);
-      color: var(--fg2);
-      margin: 2px 3px 2px 0;
-      letter-spacing: 0.03em;
-    }
+    main { padding-top: 48px; max-width: 1100px; margin: 0 auto; padding-left: 2.5rem; padding-right: 2.5rem; }
+    .project-header { padding: 3.5rem 0 2.5rem; border-bottom: 1px solid var(--bg1); }
+    .project-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.6rem; }
+    .project-title { font-family: 'Lora', serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 600; color: var(--fg); line-height: 1.2; margin-bottom: 0.75rem; }
+    .project-meta { font-size: 13px; color: var(--fg3); font-family: 'IBM Plex Mono', monospace; margin-bottom: 1rem; }
+    .project-desc { font-size: 15px; color: var(--fg2); max-width: 680px; line-height: 1.7; }
+    .tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 2px 8px; border-radius: 3px; background: var(--bg1); color: var(--fg2); margin: 2px 3px 2px 0; letter-spacing: 0.03em; }
     .tag.green  { background: #d9e8a0; color: #3d4a00; }
     .tag.blue   { background: #c4dde3; color: #02414e; }
     .tag.orange { background: #f2d9b8; color: #6b2d00; }
@@ -227,393 +48,250 @@
     html.dark .tag.blue   { background: #02414e; color: #c4dde3; }
     html.dark .tag.orange { background: #4a2500; color: #f2c98a; }
     html.dark .tag.red    { background: #4a1000; color: #f2c0a8; }
-
-    /* ── Project cards ── */
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.5rem;
-    }
-    .project-card {
-      background: var(--bg0h);
-      border: 1px solid var(--bg2);
-      border-radius: 4px;
-      overflow: hidden;
-      text-decoration: none;
-      display: block;
-      transition: border-color 0.15s, transform 0.15s;
-    }
-    .project-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
-    }
-    .card-thumb {
-      height: 160px;
-      background: var(--bg1);
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-    .card-thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center top;
-      display: block;
-    }
-    /* Fallback icon shown when no image */
-    .card-thumb .thumb-icon {
-      font-size: 36px;
-      color: var(--bg3);
-      position: absolute;
-    }
-    .card-body { padding: 1rem 1.1rem 1.1rem; }
-    .card-title {
-      font-family: 'Lora', serif;
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--fg);
-      margin-bottom: 0.35rem;
-    }
-    .card-desc {
-      font-size: 13px;
-      color: var(--fg3);
-      line-height: 1.55;
-      margin-bottom: 0.75rem;
-    }
-
-    /* ── Contact ── */
-    .contact-row {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      max-width: 400px;
-    }
-    .contact-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 15px;
-      color: var(--fg2);
-      text-decoration: none;
-      transition: color 0.15s;
-    }
-    .contact-item:hover { color: var(--accent); }
-    .contact-item i { color: var(--accent); font-size: 18px; flex-shrink: 0; }
-
-    /* ── Footer ── */
-    footer {
-      padding: 2rem 10vw;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 11px;
-      color: var(--fg3);
-      letter-spacing: 0.04em;
-    }
-
-    /* ── Responsive ── */
-    @media (max-width: 600px) {
+    .section-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 10px; padding-top: 2.5rem; }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--bg2); }
+    .accordion { display: flex; flex-direction: column; }
+    .accordion-item { border: 1px solid var(--bg2); border-radius: 4px; overflow: hidden; margin-bottom: 0.6rem; background: var(--bg0h); }
+    .accordion-trigger { width: 100%; background: none; border: none; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem; cursor: pointer; text-align: left; transition: background 0.15s; }
+    .accordion-trigger:hover, .accordion-trigger.open { background: var(--bg1); }
+    .acc-number { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.06em; flex-shrink: 0; width: 2rem; }
+    .acc-title-wrap { flex: 1; }
+    .acc-title { font-family: 'Lora', serif; font-size: 15px; font-weight: 600; color: var(--fg); display: block; }
+    .acc-subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--fg3); letter-spacing: 0.03em; }
+    .acc-chevron { font-size: 18px; color: var(--fg3); transition: transform 0.25s; flex-shrink: 0; }
+    .accordion-trigger.open .acc-chevron { transform: rotate(180deg); }
+    .accordion-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 0; max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+    .accordion-panel.open { max-height: 900px; }
+    .panel-image { border-top: 1px solid var(--bg2); background: var(--bg1); display: flex; align-items: flex-start; justify-content: center; padding: 1.25rem; }
+    .panel-image img { width: 100%; height: auto; border-radius: 2px; display: block; cursor: zoom-in; transition: opacity 0.15s; }
+    .panel-image img:hover { opacity: 0.88; }
+    .panel-text { border-top: 1px solid var(--bg2); border-left: 1px solid var(--bg2); padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+    .method-block h4 { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.35rem; }
+    .method-block p { font-size: 13px; color: var(--fg2); line-height: 1.65; }
+    #lightbox { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.92); align-items: center; justify-content: center; cursor: zoom-out; }
+    #lightbox.open { display: flex; }
+    #lightbox img { max-width: 92vw; max-height: 92vh; border-radius: 3px; box-shadow: 0 8px 40px rgba(0,0,0,0.6); object-fit: contain; cursor: default; }
+    #lightbox-close { position: absolute; top: 1.25rem; right: 1.5rem; background: none; border: none; color: #ebdbb2; font-size: 28px; cursor: pointer; line-height: 1; opacity: 0.7; transition: opacity 0.15s; }
+    #lightbox-close:hover { opacity: 1; }
+    #lightbox-caption { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #bdae93; white-space: nowrap; }
+    footer { padding: 2rem 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--fg3); letter-spacing: 0.04em; border-top: 1px solid var(--bg1); margin-top: 3rem; }
+    @media (max-width: 700px) {
+      main { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .accordion-panel { grid-template-columns: 1fr; }
+      .panel-text { border-left: none; border-top: 1px solid var(--bg2); }
       #topbar { padding: 0 1.25rem; }
       .site-mark { margin-right: 1rem; }
-      .nav-link { padding: 0 0.6rem; font-size: 10px; }
-      section { padding: 3.5rem 1.25rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ═══════════════════════════════════════════════════════════
-       TOPBAR — edit site-mark text and social URLs below
-  ═══════════════════════════════════════════════════════════ -->
   <nav id="topbar">
-    <a class="site-mark" href="#hero">B. ▴ GIS</a>
-    <div class="nav-links">
-      <a class="nav-link active" href="#hero">Home</a>
-      <a class="nav-link" href="#about">About</a>
-      <a class="nav-link" href="#projects">Projects</a>
-      <a class="nav-link" href="#contact">Contact</a>
+    <a class="site-mark" href="../index.html">B. ▴ GIS</a>
+    <div style="display:flex;flex:1;">
+      <a class="nav-link active" href="../index.html">Home</a>
     </div>
     <div class="topbar-right">
-      <a class="icon-link" href="https://github.com/YOUR_GITHUB" target="_blank" rel="noopener" aria-label="GitHub">
-        <i class="ti ti-brand-github"></i>
-      </a>
-      <a class="icon-link" href="https://linkedin.com/in/YOUR_LINKEDIN" target="_blank" rel="noopener" aria-label="LinkedIn">
-        <i class="ti ti-brand-linkedin"></i>
-      </a>
+      <a class="icon-link" href="https://github.com/Brendan-Mann" target="_blank" rel="noopener" aria-label="GitHub"><i class="ti ti-brand-github"></i></a>
+      <a class="icon-link" href="https://linkedin.com/in/YOUR_LINKEDIN" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="ti ti-brand-linkedin"></i></a>
       <button class="theme-toggle" id="themeBtn" aria-label="Toggle dark mode">◐ dark</button>
     </div>
   </nav>
 
   <main>
+    <div class="project-header">
+      <p class="project-eyebrow">GIS 309 — Thematic Mapping</p>
+      <h1 class="project-title">Mass Shootings<br>in America</h1>
+      <p class="project-meta">Western Illinois University &nbsp;·&nbsp; February 2026</p>
+      <p class="project-desc">
+        Four maps, four datasets, four definitions — the same phenomenon mapped differently.
+        This project compares how The Violence Project, Mother Jones, the Mass Shooting Tracker,
+        and the AP/USA Today mass killings database each produce a distinct spatial picture of
+        gun violence in the United States, demonstrating how data provenance and definitional
+        choices fundamentally shape cartographic output.
+      </p>
+      <div style="margin-top:1rem;">
+        <span class="tag green">ArcGIS Pro</span>
+        <span class="tag blue">The Violence Project</span>
+        <span class="tag blue">Mother Jones</span>
+        <span class="tag blue">Mass Shooting Tracker</span>
+        <span class="tag blue">AP/USA Today</span>
+        <span class="tag red">Data Provenance</span>
+        <span class="tag red">Definition Comparison</span>
+      </div>
+    </div>
 
-    <!-- ═══════════════════════════════════════════════════════════
-         HERO — edit tagline and subtitle in heroContent below
-    ═══════════════════════════════════════════════════════════ -->
-    <section id="hero">
-      <svg id="topo-bg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice"
-           xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M-20,220 Q150,130 300,200 Q450,270 600,170 Q750,70 900,155 Q1050,240 1220,190"
-              fill="none" stroke="#b57614" stroke-width="1.4"/>
-        <path d="M-20,248 Q150,158 300,228 Q450,298 600,198 Q750,98 900,183 Q1050,268 1220,218"
-              fill="none" stroke="#b57614" stroke-width="1.4"/>
-        <path d="M-20,276 Q150,186 300,256 Q450,326 600,226 Q750,126 900,211 Q1050,296 1220,246"
-              fill="none" stroke="#b57614" stroke-width="1.4"/>
-        <path d="M-20,304 Q150,214 300,284 Q450,354 600,254 Q750,154 900,239 Q1050,324 1220,274"
-              fill="none" stroke="#b57614" stroke-width="1.3"/>
-        <path d="M-20,332 Q150,242 300,312 Q450,382 600,282 Q750,182 900,267 Q1050,352 1220,302"
-              fill="none" stroke="#b57614" stroke-width="1.3"/>
-        <path d="M-20,360 Q150,270 300,340 Q450,410 600,310 Q750,210 900,295 Q1050,380 1220,330"
-              fill="none" stroke="#b57614" stroke-width="1.2"/>
-        <path d="M120,80 Q250,30 380,85 Q490,135 560,78 Q650,18 760,72 Q860,122 940,75"
-              fill="none" stroke="#b57614" stroke-width="1.1"/>
-        <path d="M120,104 Q250,54 380,109 Q490,159 560,102 Q650,42 760,96 Q860,146 940,99"
-              fill="none" stroke="#b57614" stroke-width="1.1"/>
-        <path d="M120,128 Q250,78 380,133 Q490,183 560,126 Q650,66 760,120 Q860,170 940,123"
-              fill="none" stroke="#b57614" stroke-width="1"/>
-      </svg>
-      <p class="hero-eyebrow">Portfolio</p>
-      <h1 class="hero-title">Maps built from<br>real questions.</h1>
-      <p class="hero-sub">GIS analyst, remote sensing, and cartographer based in St. Louis.
-        Army intelligence background. FAA Part 107 certified.</p>
-    </section>
+    <p class="section-label">Maps</p>
+    <div class="accordion" id="accordion"></div>
 
-    <!-- ═══════════════════════════════════════════════════════════
-         ABOUT — edit aboutBlocks and toolTags arrays in the
-         <script> section below. No HTML changes needed.
-    ═══════════════════════════════════════════════════════════ -->
-    <section id="about">
-      <p class="section-label">About</p>
-      <div class="about-grid" id="aboutGrid"></div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════════════════
-         PROJECTS — add/edit entries in the projects array in the
-         <script> section below. No HTML changes needed.
-         Thumbnail images go in assets/img/
-    ═══════════════════════════════════════════════════════════ -->
-    <section id="projects">
-      <p class="section-label">Projects</p>
-      <div class="card-grid" id="cardGrid"></div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════════════════
-         CONTACT — edit contactItems array in the <script> below
-    ═══════════════════════════════════════════════════════════ -->
-    <section id="contact">
-      <p class="section-label">Contact</p>
-      <div class="contact-row" id="contactRow"></div>
-    </section>
-
+    <footer>Built with QGIS, plain HTML, and strong opinions about color palettes.</footer>
   </main>
 
-  <footer>
-    <span>Built with QGIS, plain HTML, and strong opinions about color palettes.</span>
-  </footer>
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Map fullscreen view" onclick="closeLightbox(event)">
+    <button id="lightbox-close" onclick="closeLightbox()" aria-label="Close"><i class="ti ti-x"></i></button>
+    <img id="lightbox-img" src="" alt="">
+    <span id="lightbox-caption"></span>
+  </div>
 
   <script>
-    // ════════════════════════════════════════════════════════════════
-    //  SITE DATA — edit everything in this block to update the site.
-    //  Nothing below the "RENDERER" comment needs to be touched.
-    // ════════════════════════════════════════════════════════════════
-
-    // ── About blocks ─────────────────────────────────────────────
-    // Add, remove, or reorder objects freely. The grid reflows.
-    const aboutBlocks = [
+    const maps = [
       {
-        heading: "Background",
-        text: "US Army Intelligence Analyst and Forward Observer. Now applying geospatial tradecraft to environmental analysis, atmospheric sciences, and open-source GIS."
-      },
-      {
-        heading: "Currently Studying",
-        text: "B.S. Geography & Atmospheric Sciences, Western Illinois University. Advanced Cartography (GIS 402G) and Digital Earth (GIS 108), Fall 2026."
-      },
-      {
-        heading: "Tools",
-        // tags: array of { label, color } — color options: green | blue | orange | red | (blank for neutral)
-        tags: [
-          { label: "QGIS",          color: "green"  },
-          { label: "ArcGIS Pro",    color: "green"  },
-          { label: "GDAL/OGR",      color: "green"  },
-          { label: "PostGIS",       color: "blue"   },
-          { label: "Python",        color: "blue"   },
-          { label: "DJI Mini 4 Pro",color: "orange" },
-          { label: "FAA Part 107",  color: "orange" },
+        number: "01",
+        title:  "The Violence Project — Since 1966",
+        type:   "Point Map",
+        img:    "../assets/img/mass-shootings-violence-project.png",
+        methods: [
+          {
+            heading: "Data Source",
+            text: "The Violence Project Mass Shooter Database (theviolenceproject.org). Covers mass shootings since 1966, defined as four or more people shot and killed (excluding the shooter) in a public location with no connection to underlying criminal activity such as gangs or drugs. This is the most restrictive definition of the four datasets."
+          },
+          {
+            heading: "Spatial Pattern",
+            text: "The restrictive definition produces a sparse, nationally distributed pattern. California, Texas, and the Northeast corridor show clustering, but the overall point density is low — roughly 200 incidents over 60 years. The absence of events in large swaths of the interior reflects both definitional exclusions and lower population density."
+          },
+          {
+            heading: "Design",
+            text: "Red four-pointed star symbols on a minimal white base. Symbol shape was chosen to evoke significance without implying quantitative magnitude — each symbol represents one incident regardless of casualty count. Washington State highlighted in gray as the course study area."
+          },
         ]
       },
       {
-        heading: "Interests",
-        text: "Watershed analysis, precipitation modeling, drone remote sensing, open data pipelines, environmental consulting."
-      },
-    ];
-
-    // ── Projects ──────────────────────────────────────────────────
-    // thumb: path relative to index.html, e.g. "assets/img/foo.png"
-    //        Leave as "" to show a generic map icon placeholder.
-    // link:  URL for the card. Use "#projects" as a stub until the
-    //        project page exists.
-    // tags:  same { label, color } objects as aboutBlocks above.
-    const projects = [
-      {
-        title: "Washington State Environmental Mapping",
-        desc:  "Five-map series: forest cover choropleth, bivariate fire/drought risk, protected lands, stream discharge, and Bald Eagle observation density.",
-        thumb: "assets/img/washington-bivariate.png",
-        tags: [
-          { label: "QGIS",      color: "green" },
-          { label: "ArcGIS Pro",color: "green" },
-          { label: "NLCD",      color: "blue"  },
-          { label: "GBIF",      color: "blue"  },
-          { label: "USFS",      color: "blue"  },
-        ],
-        link: "projects/washington.html"
+        number: "02",
+        title:  "Mother Jones — Since 1982",
+        type:   "Point Map",
+        img:    "../assets/img/mass-shootings-mother-jones.png",
+        methods: [
+          {
+            heading: "Data Source",
+            text: "Mother Jones Mass Shootings Database (motherjones.com). Covers mass shootings since 1982, defined as indiscriminate rampages in public places resulting in four or more victims killed by the attacker. Excludes shootings stemming from conventionally motivated crimes (robbery, gang violence) or cases where perpetrators have not been identified."
+          },
+          {
+            heading: "Comparison with Violence Project",
+            text: "Coverage begins 1982 (vs. 1966) but the pattern is similar in density — both use a lethality-based definition requiring four or more killed. The Mother Jones dataset adds some incidents not captured by the Violence Project due to differences in source methodology and editorial review processes."
+          },
+          {
+            heading: "Design",
+            text: "Black four-pointed star symbols, same form factor as the Violence Project map to facilitate direct visual comparison. The monochrome palette emphasizes the similarity in pattern density between the two most restrictive datasets."
+          },
+        ]
       },
       {
-        title: "Hurricane Harvey Precipitation Analysis",
-        desc:  "MRMS QPE raster pipeline for Hurricane Harvey. Full reprojection, zonal statistics, and two-panel cartographic output.",
-        thumb: "assets/img/harvey.png",
-        tags: [
-          { label: "GDAL",   color: "green" },
-          { label: "QGIS",   color: "green" },
-          { label: "Python", color: "blue"  },
-          { label: "MRMS",   color: "blue"  },
-        ],
-        link: "#projects"   // TODO: replace with projects/harvey.html
+        number: "03",
+        title:  "Mass Shooting Tracker — Since 2013",
+        type:   "Proportional Symbol",
+        img:    "../assets/img/mass-shootings-tracker.png",
+        methods: [
+          {
+            heading: "Data Source",
+            text: "Mass Shooting Tracker (massshootingtracker.site), a crowd-sourced database active since 2013. Defines a mass shooting as any single outburst of violence in which four or more people are shot — not necessarily killed. Includes the gunman and police shootings of civilians around the gunman. This is the broadest definition of the four datasets."
+          },
+          {
+            heading: "Definitional Impact",
+            text: "The shift from 'four or more killed' to 'four or more shot' produces a dramatically different map. Where the Violence Project shows ~200 incidents since 1966, the Mass Shooting Tracker records thousands since 2013 alone. Los Angeles and Chicago dominate the proportional symbols — urban areas with high rates of gun violence that falls below the lethality threshold of the other datasets."
+          },
+          {
+            heading: "Classification",
+            text: "Proportional symbols scaled to total victims shot per location, grouped into five classes: 4–47, 48–171, 172–380, 381–793, 794–1,868. The upper class representing Chicago and Los Angeles is markedly larger than all others, compressing mid-range variation — an inherent challenge of proportional symbol maps with extreme outliers."
+          },
+          {
+            heading: "Design",
+            text: "Lime green graduated circles. The high-saturation color and dense point coverage visually communicates the dramatically higher incident count compared to the other three datasets."
+          },
+        ]
       },
       {
-        title: "Mass Shootings in America",
-        desc:  "Four-dataset comparison mapping the same phenomenon under different definitions — The Violence Project, Mother Jones, Mass Shooting Tracker, and AP/USA Today.",
-        thumb: "assets/img/mass-shootings-violence-project.png",
-        tags: [
-          { label: "ArcGIS Pro",      color: "green" },
-          { label: "Multi-Dataset",   color: "blue"  },
-          { label: "Data Provenance", color: "red"   },
-        ],
-        link: "projects/mass-shootings.html"
-      },
-      {
-        title: "Chicago Crime Mapping Series",
-        desc:  "Robbery patterns and homicide analysis across Chicago — MAUP comparison, bivariate social disorganization, and 25-year small multiples temporal series.",
-        thumb: "assets/img/chicago-robberies.png",
-        tags: [
-          { label: "ArcGIS Pro",        color: "green" },
-          { label: "QGIS",              color: "green" },
-          { label: "Chicago Data Portal",color: "blue"  },
-          { label: "ACS Census",        color: "blue"  },
-          { label: "Crime Analysis",    color: "red"   },
-        ],
-        link: "projects/chicago.html"
-      },
-      {
-        title: "Drone Remote Sensing",
-        desc:  "FAA Part 107 aerial imagery with the DJI Mini 4 Pro for site analysis and orthomosaic mapping.",
-        thumb: "",           // no image yet — shows placeholder icon
-        tags: [
-          { label: "DJI Mini 4 Pro", color: "orange" },
-          { label: "FAA Part 107",   color: "orange" },
-        ],
-        link: "#projects"
+        number: "04",
+        title:  "AP/USA Today — Mass Killings Since 2006",
+        type:   "Categorical Point Map",
+        img:    "../assets/img/mass-shootings-mass-killings.png",
+        methods: [
+          {
+            heading: "Data Source",
+            text: "AP/USA Today/Northeastern University Mass Killings Database (apnews.com). Tracks all homicides since 2006 in which four or more people were killed intentionally within a 24-hour period, not including any offender and not including any fetus or embryo carried by a pregnant victim. Crucially, this database is not limited to firearms — it includes all methods of mass killing."
+          },
+          {
+            heading: "Multi-Method Encoding",
+            text: "Nine method-of-killing categories are encoded by symbol color: shooting (dark red, dominant), stabbing (lime green), blunt force (blue), asphyxiation (dark green), vehicle crash (tan), drowning (pink), strangulation (light purple), pushing/jumping (yellow-green), and smoke inhalation/burns (purple). The overwhelming dominance of dark red shooting symbols demonstrates that firearms account for the vast majority of mass killings even within a broader definitional framework."
+          },
+          {
+            heading: "Design",
+            text: "Categorical color encoding by weapon type using a qualitative palette. The four-pointed star form factor is consistent with the other point maps in the series, enabling visual comparison of spatial density while the color dimension adds the method variable."
+          },
+        ]
       },
 
-      // ── TEMPLATE — copy the block below, uncomment, and fill in ──
+      // ── TEMPLATE ──
       // {
-      //   title: "Project Title",
-      //   desc:  "One or two sentence description.",
-      //   thumb: "assets/img/your-thumbnail.png",
-      //   tags: [
-      //     { label: "Tool",    color: "green"  },
-      //     { label: "Dataset", color: "blue"   },
-      //   ],
-      //   link: "projects/your-project.html"
+      //   number: "05",
+      //   title:  "Map Title",
+      //   type:   "Map Type",
+      //   img:    "../assets/img/your-image.png",
+      //   methods: [
+      //     { heading: "Data Source",    text: "..." },
+      //     { heading: "Classification", text: "..." },
+      //     { heading: "Design",         text: "..." },
+      //   ]
       // },
-      // ─────────────────────────────────────────────────────────────
     ];
-
-    // ── Contact items ─────────────────────────────────────────────
-    // icon: any Tabler icon name (without "ti-"), e.g. "mail", "map-pin"
-    // href: use "mailto:..." for email, full URL for links, "" for plain text
-    const contactItems = [
-      { icon: "mail",           label: "your@email.com",              href: "mailto:your@email.com"               },
-      { icon: "brand-github",   label: "github.com/YOUR_GITHUB",      href: "https://github.com/YOUR_GITHUB"      },
-      { icon: "brand-linkedin", label: "linkedin.com/in/YOUR_LINKEDIN",href: "https://linkedin.com/in/YOUR_LINKEDIN"},
-      { icon: "map-pin",        label: "St. Louis, MO",               href: ""                                    },
-    ];
-
 
     // ════════════════════════════════════════════════════════════════
     //  RENDERER — no edits needed below this line
     // ════════════════════════════════════════════════════════════════
-
-    // ── Build tag HTML ────────────────────────────────────────────
-    function renderTags(tags) {
-      return tags.map(t =>
-        `<span class="tag${t.color ? ' ' + t.color : ''}">${t.label}</span>`
-      ).join('');
-    }
-
-    // ── About grid ───────────────────────────────────────────────
-    document.getElementById('aboutGrid').innerHTML = aboutBlocks.map(b => {
-      const content = b.tags
-        ? `<p>${renderTags(b.tags)}</p>`
-        : `<p>${b.text}</p>`;
-      return `<div class="about-block"><h3>${b.heading}</h3>${content}</div>`;
-    }).join('');
-
-    // ── Project cards ────────────────────────────────────────────
-    document.getElementById('cardGrid').innerHTML = projects.map(p => {
-      const thumbHTML = p.thumb
-        ? `<img src="${p.thumb}" alt="${p.title}" loading="lazy">`
-        : `<i class="ti ti-map-2 thumb-icon" aria-hidden="true"></i>`;
-      return `
-        <a class="project-card" href="${p.link}">
-          <div class="card-thumb">${thumbHTML}</div>
-          <div class="card-body">
-            <p class="card-title">${p.title}</p>
-            <p class="card-desc">${p.desc}</p>
-            ${renderTags(p.tags)}
+    const accordion = document.getElementById('accordion');
+    accordion.innerHTML = maps.map((m, i) => `
+      <div class="accordion-item">
+        <button class="accordion-trigger" id="trigger-${i}" aria-expanded="false"
+                aria-controls="panel-${i}" onclick="toggle(${i})">
+          <span class="acc-number">${m.number}</span>
+          <span class="acc-title-wrap">
+            <span class="acc-title">${m.title}</span>
+            <span class="acc-subtitle">${m.type}</span>
+          </span>
+          <i class="ti ti-chevron-down acc-chevron" aria-hidden="true"></i>
+        </button>
+        <div class="accordion-panel" id="panel-${i}" role="region" aria-labelledby="trigger-${i}">
+          <div class="panel-image">
+            <img src="${m.img}" alt="${m.title}" loading="lazy"
+                 onclick="openLightbox('${m.img}', '${m.number} — ${m.title}')"
+                 title="Click to enlarge">
           </div>
-        </a>`;
-    }).join('');
+          <div class="panel-text">
+            ${m.methods.map(b => `
+              <div class="method-block">
+                <h4>${b.heading}</h4>
+                <p>${b.text}</p>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>`).join('');
 
-    // ── Contact row ──────────────────────────────────────────────
-    document.getElementById('contactRow').innerHTML = contactItems.map(c => {
-      const tag = c.href ? 'a' : 'span';
-      const attrs = c.href
-        ? `href="${c.href}"${c.href.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}`
-        : '';
-      return `<${tag} class="contact-item" ${attrs}>
-        <i class="ti ti-${c.icon}" aria-hidden="true"></i>${c.label}
-      </${tag}>`;
-    }).join('');
-
-    // ── Theme toggle ─────────────────────────────────────────────
-    const btn = document.getElementById('themeBtn');
-    function applyTheme(dark) {
-      document.documentElement.classList.toggle('dark', dark);
-      btn.textContent = dark ? '◐ light' : '◐ dark';
+    function toggle(i) {
+      const trigger = document.getElementById(`trigger-${i}`);
+      const panel   = document.getElementById(`panel-${i}`);
+      const isOpen  = trigger.classList.contains('open');
+      document.querySelectorAll('.accordion-trigger').forEach(t => { t.classList.remove('open'); t.setAttribute('aria-expanded','false'); });
+      document.querySelectorAll('.accordion-panel').forEach(p => p.classList.remove('open'));
+      if (!isOpen) { trigger.classList.add('open'); trigger.setAttribute('aria-expanded','true'); panel.classList.add('open'); }
     }
-    btn.addEventListener('click', () => {
-      const isDark = !document.documentElement.classList.contains('dark');
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      applyTheme(isDark);
-    });
+
+    function openLightbox(src, caption) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox-img').alt = caption;
+      document.getElementById('lightbox-caption').textContent = caption;
+      document.getElementById('lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox(e) {
+      if (e && e.target.tagName === 'IMG') return;
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+    const btn = document.getElementById('themeBtn');
+    function applyTheme(dark) { document.documentElement.classList.toggle('dark', dark); btn.textContent = dark ? '◐ light' : '◐ dark'; }
+    btn.addEventListener('click', () => { const d = !document.documentElement.classList.contains('dark'); localStorage.setItem('theme', d ? 'dark' : 'light'); applyTheme(d); });
     applyTheme(localStorage.getItem('theme') === 'dark');
-
-    // ── Active nav on scroll (IntersectionObserver) ───────────────
-    const navLinks = document.querySelectorAll('.nav-link');
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          navLinks.forEach(l => l.classList.remove('active'));
-          const match = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
-          if (match) match.classList.add('active');
-        }
-      });
-    }, { rootMargin: '-40% 0px -55% 0px' });
-    ['hero','about','projects','contact'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
   </script>
-
 </body>
 </html>
