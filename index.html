@@ -455,14 +455,14 @@
     // tags:  same { label, color } objects as aboutBlocks above.
     const projects = [
       {
-        title: "Washington State Environmental Mapping",
-        desc:  "Five-map series: forest cover choropleth, bivariate fire/drought risk, protected lands, stream discharge, and Bald Eagle observation density.",
+        title: "Washington State Mapping Series",
+        desc:  "Seven-map series covering environmental patterns (forest cover, fire/drought, protected lands, stream discharge, Bald Eagle observations) and socioeconomic analysis (median household income, population centroids).",
         thumb: "assets/img/washington-bivariate.png",
         tags: [
           { label: "QGIS",      color: "green" },
           { label: "ArcGIS Pro",color: "green" },
           { label: "NLCD",      color: "blue"  },
-          { label: "GBIF",      color: "blue"  },
+          { label: "ACS Census",color: "blue"  },
           { label: "USFS",      color: "blue"  },
         ],
         link: "projects/washington.html"
@@ -478,6 +478,18 @@
           { label: "MRMS",   color: "blue"  },
         ],
         link: "#projects"   // TODO: replace with projects/harvey.html
+      },
+      {
+        title: "Population Mapping Methods",
+        desc:  "Five-map series examining how dot density aggregation, proportional symbol scaling, and classification methods each change the spatial picture of Census population data.",
+        thumb: "assets/img/population-washington-classification.png",
+        tags: [
+          { label: "ArcGIS Pro",            color: "green" },
+          { label: "ACS Census",            color: "blue"  },
+          { label: "MAUP",                  color: "red"   },
+          { label: "Classification Methods", color: "red"  },
+        ],
+        link: "projects/population.html"
       },
       {
         title: "Bombing Missions of the Vietnam War",
