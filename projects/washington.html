@@ -301,6 +301,57 @@
       line-height: 1.65;
     }
 
+    /* ── Lightbox ── */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0, 0, 0, 0.92);
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+    #lightbox.open { display: flex; }
+    #lightbox img {
+      max-width: 92vw;
+      max-height: 92vh;
+      border-radius: 3px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+      object-fit: contain;
+      cursor: default;
+    }
+    #lightbox-close {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      color: #ebdbb2;
+      font-size: 28px;
+      cursor: pointer;
+      line-height: 1;
+      opacity: 0.7;
+      transition: opacity 0.15s;
+    }
+    #lightbox-close:hover { opacity: 1; }
+    #lightbox-caption {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: #bdae93;
+      white-space: nowrap;
+    }
+    .panel-image img {
+      cursor: zoom-in;
+      transition: opacity 0.15s;
+    }
+    .panel-image img:hover { opacity: 0.88; }
+
     /* ── Footer ── */
     footer {
       padding: 2rem 0;
@@ -355,7 +406,6 @@
         to proportional symbols — applied to real environmental datasets.
       </p>
       <div style="margin-top:1rem;">
-        <span class="tag green">QGIS</span>
         <span class="tag green">ArcGIS Pro</span>
         <span class="tag blue">NLCD 2021</span>
         <span class="tag blue">GBIF</span>
@@ -375,6 +425,16 @@
 
     <footer>Built with QGIS, plain HTML, and strong opinions about color palettes.</footer>
   </main>
+
+  <!-- Lightbox -->
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Map fullscreen view"
+       onclick="closeLightbox(event)">
+    <button id="lightbox-close" onclick="closeLightbox()" aria-label="Close">
+      <i class="ti ti-x"></i>
+    </button>
+    <img id="lightbox-img" src="" alt="">
+    <span id="lightbox-caption"></span>
+  </div>
 
   <script>
     // ════════════════════════════════════════════════════════════════
@@ -519,7 +579,9 @@
         </button>
         <div class="accordion-panel" id="panel-${i}" role="region" aria-labelledby="trigger-${i}">
           <div class="panel-image">
-            <img src="${m.img}" alt="${m.title}" loading="lazy">
+            <img src="${m.img}" alt="${m.title}" loading="lazy"
+                 onclick="openLightbox('${m.img}', '${m.number} — ${m.title}')"
+                 title="Click to enlarge">
           </div>
           <div class="panel-text">
             ${m.methods.map(b => `
@@ -551,6 +613,29 @@
         panel.classList.add('open');
       }
     }
+
+    // ── Lightbox ─────────────────────────────────────────────────
+    function openLightbox(src, caption) {
+      const lb  = document.getElementById('lightbox');
+      const img = document.getElementById('lightbox-img');
+      const cap = document.getElementById('lightbox-caption');
+      img.src        = src;
+      img.alt        = caption;
+      cap.textContent = caption;
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox(e) {
+      // close if clicking backdrop or close button, not the image itself
+      if (e && e.target.tagName === 'IMG') return;
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeLightbox();
+    });
 
     // ── Theme toggle ─────────────────────────────────────────────
     const btn = document.getElementById('themeBtn');
