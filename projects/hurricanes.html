@@ -3,6 +3,275 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hurricane Precipitation Analysis — Brendan Mann</title>
+  <meta name="description" content="Two-map series analyzing the precipitation footprints of Hurricane Harvey (2017) and Hurricane Helene (2024) using MRMS QPE raster data and IBTrACS storm track data.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Lora:wght@400;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg0: #fbf1c7; --bg0h: #f9f5d7; --bg1: #ebdbb2; --bg2: #d5c4a1;
+      --bg3: #bdae93; --fg: #3c3836; --fg2: #665c54; --fg3: #928374;
+      --accent: #b57614; --green: #79740e; --blue: #076678;
+    }
+    html.dark {
+      --bg0: #1d2021; --bg0h: #282828; --bg1: #3c3836; --bg2: #504945;
+      --bg3: #665c54; --fg: #ebdbb2; --fg2: #d5c4a1; --fg3: #bdae93;
+      --accent: #d79921; --green: #b8bb26; --blue: #83a598;
+    }
+    html, body { background: var(--bg0); color: var(--fg); font-family: 'IBM Plex Sans', sans-serif; font-size: 16px; line-height: 1.6; }
+    #topbar { position: fixed; top: 0; left: 0; right: 0; height: 48px; background: var(--bg0h); border-bottom: 1px solid var(--bg2); padding: 0 2.5rem; display: flex; align-items: center; z-index: 100; }
+    .site-mark { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; color: var(--accent); letter-spacing: 0.04em; text-decoration: none; margin-right: 2rem; white-space: nowrap; }
+    .nav-link { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--fg3); text-decoration: none; padding: 0 1rem; height: 48px; display: flex; align-items: center; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s, border-color 0.15s; }
+    .nav-link:hover { color: var(--fg); }
+    .nav-link.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .topbar-right { display: flex; align-items: center; gap: 16px; margin-left: auto; }
+    .icon-link { color: var(--fg2); font-size: 18px; text-decoration: none; transition: color 0.15s; }
+    .icon-link:hover { color: var(--accent); }
+    .theme-toggle { background: none; border: 1px solid var(--fg2); border-radius: 3px; color: var(--fg2); font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 4px 9px; cursor: pointer; letter-spacing: 0.04em; transition: color 0.15s, border-color 0.15s; }
+    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+    main { padding-top: 48px; max-width: 1100px; margin: 0 auto; padding-left: 2.5rem; padding-right: 2.5rem; }
+    .project-header { padding: 3.5rem 0 2.5rem; border-bottom: 1px solid var(--bg1); }
+    .project-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.6rem; }
+    .project-title { font-family: 'Lora', serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 600; color: var(--fg); line-height: 1.2; margin-bottom: 0.75rem; }
+    .project-meta { font-size: 13px; color: var(--fg3); font-family: 'IBM Plex Mono', monospace; margin-bottom: 1rem; }
+    .project-desc { font-size: 15px; color: var(--fg2); max-width: 680px; line-height: 1.7; }
+    .tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 2px 8px; border-radius: 3px; background: var(--bg1); color: var(--fg2); margin: 2px 3px 2px 0; letter-spacing: 0.03em; }
+    .tag.green  { background: #d9e8a0; color: #3d4a00; }
+    .tag.blue   { background: #c4dde3; color: #02414e; }
+    .tag.orange { background: #f2d9b8; color: #6b2d00; }
+    .tag.red    { background: #f2cbb8; color: #6b1a00; }
+    html.dark .tag        { background: var(--bg2); color: var(--fg2); }
+    html.dark .tag.green  { background: #3d4a00; color: #d9e8a0; }
+    html.dark .tag.blue   { background: #02414e; color: #c4dde3; }
+    html.dark .tag.orange { background: #4a2500; color: #f2c98a; }
+    html.dark .tag.red    { background: #4a1000; color: #f2c0a8; }
+    .section-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 10px; padding-top: 2.5rem; }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--bg2); }
+    .accordion { display: flex; flex-direction: column; }
+    .accordion-item { border: 1px solid var(--bg2); border-radius: 4px; overflow: hidden; margin-bottom: 0.6rem; background: var(--bg0h); }
+    .accordion-trigger { width: 100%; background: none; border: none; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem; cursor: pointer; text-align: left; transition: background 0.15s; }
+    .accordion-trigger:hover, .accordion-trigger.open { background: var(--bg1); }
+    .acc-number { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.06em; flex-shrink: 0; width: 2rem; }
+    .acc-title-wrap { flex: 1; }
+    .acc-title { font-family: 'Lora', serif; font-size: 15px; font-weight: 600; color: var(--fg); display: block; }
+    .acc-subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--fg3); letter-spacing: 0.03em; }
+    .acc-chevron { font-size: 18px; color: var(--fg3); transition: transform 0.25s; flex-shrink: 0; }
+    .accordion-trigger.open .acc-chevron { transform: rotate(180deg); }
+    .accordion-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 0; max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+    .accordion-panel.open { max-height: 1000px; }
+    .panel-image { border-top: 1px solid var(--bg2); background: var(--bg1); display: flex; align-items: flex-start; justify-content: center; padding: 1.25rem; }
+    .panel-image img { width: 100%; height: auto; border-radius: 2px; display: block; cursor: zoom-in; transition: opacity 0.15s; }
+    .panel-image img:hover { opacity: 0.88; }
+    .panel-text { border-top: 1px solid var(--bg2); border-left: 1px solid var(--bg2); padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+    .method-block h4 { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.35rem; }
+    .method-block p { font-size: 13px; color: var(--fg2); line-height: 1.65; }
+    #lightbox { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.92); align-items: center; justify-content: center; cursor: zoom-out; }
+    #lightbox.open { display: flex; }
+    #lightbox img { max-width: 92vw; max-height: 92vh; border-radius: 3px; box-shadow: 0 8px 40px rgba(0,0,0,0.6); object-fit: contain; cursor: default; }
+    #lightbox-close { position: absolute; top: 1.25rem; right: 1.5rem; background: none; border: none; color: #ebdbb2; font-size: 28px; cursor: pointer; line-height: 1; opacity: 0.7; transition: opacity 0.15s; }
+    #lightbox-close:hover { opacity: 1; }
+    #lightbox-caption { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #bdae93; white-space: nowrap; }
+    footer { padding: 2rem 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--fg3); letter-spacing: 0.04em; border-top: 1px solid var(--bg1); margin-top: 3rem; }
+    @media (max-width: 700px) {
+      main { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .accordion-panel { grid-template-columns: 1fr; }
+      .panel-text { border-left: none; border-top: 1px solid var(--bg2); }
+      #topbar { padding: 0 1.25rem; }
+      .site-mark { margin-right: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav id="topbar">
+    <a class="site-mark" href="../index.html">B. ▴ GIS</a>
+    <div style="display:flex;flex:1;">
+      <a class="nav-link active" href="../index.html">Home</a>
+    </div>
+    <div class="topbar-right">
+      <a class="icon-link" href="https://github.com/Brendan-Mann" target="_blank" rel="noopener" aria-label="GitHub"><i class="ti ti-brand-github"></i></a>
+      <a class="icon-link" href="https://linkedin.com/in/YOUR_LINKEDIN" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="ti ti-brand-linkedin"></i></a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Toggle dark mode">◐ dark</button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="project-header">
+      <p class="project-eyebrow">Climatology — METR 327</p>
+      <h1 class="project-title">Hurricane Precipitation<br>Analysis</h1>
+      <p class="project-meta">Western Illinois University &nbsp;·&nbsp; Spring 2026</p>
+      <p class="project-desc">
+        Two maps applying the same pipeline — MRMS Multi-Sensor QPE raster data, IBTrACS
+        storm track records, and Lambert Azimuthal Equal Area projection — to two of the
+        most destructive Atlantic hurricanes in modern U.S. history. Harvey (2017) and
+        Helene (2024) represent contrasting storm behaviors: Harvey stalled over Houston
+        producing historic rainfall concentration, while Helene tracked inland delivering
+        catastrophic precipitation across the Southern Appalachians.
+      </p>
+      <div style="margin-top:1rem;">
+        <span class="tag green">QGIS</span>
+        <span class="tag green">GDAL</span>
+        <span class="tag blue">MRMS QPE</span>
+        <span class="tag blue">IBTrACS</span>
+        <span class="tag blue">NOAA</span>
+        <span class="tag red">Precipitation Analysis</span>
+        <span class="tag red">Natural Hazards</span>
+      </div>
+    </div>
+
+    <p class="section-label">Maps</p>
+    <div class="accordion" id="accordion"></div>
+
+    <footer>Built with QGIS, plain HTML, and strong opinions about color palettes.</footer>
+  </main>
+
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Map fullscreen view" onclick="closeLightbox(event)">
+    <button id="lightbox-close" onclick="closeLightbox()" aria-label="Close"><i class="ti ti-x"></i></button>
+    <img id="lightbox-img" src="" alt="">
+    <span id="lightbox-caption"></span>
+  </div>
+
+  <script>
+    // ════════════════════════════════════════════════════════════════
+    //  MAP DATA
+    // ════════════════════════════════════════════════════════════════
+    const maps = [
+      {
+        number: "01",
+        title:  "Hurricane Harvey, 2017",
+        type:   "Raster Precipitation + Storm Track",
+        img:    "../assets/img/hurricane-harvey.png",
+        methods: [
+          {
+            heading: "Event Summary",
+            text: "Hurricane Harvey made landfall near Rockport, Texas on August 25, 2017 as a Category 4 storm, then stalled over the Houston metropolitan area for four days. It dropped over 60 inches of rainfall near Nederland, Texas — the highest single-storm total ever recorded in U.S. history — causing catastrophic flooding that displaced more than 30,000 people and resulted in 105 deaths and approximately $125 billion in damage."
+          },
+          {
+            heading: "Data Sources",
+            text: "Precipitation: NOAA Multi-Sensor QPE (MRMS) Stage IV analysis raster, clipped to the storm's effective precipitation footprint. Storm track: IBTrACS (International Best Track Archive for Climate Stewardship), NOAA National Centers for Environmental Information. Track points symbolized by Saffir-Simpson category."
+          },
+          {
+            heading: "Methodology",
+            text: "Two-panel layout: left panel shows the IBTrACS storm track with category-coded symbols overlaid on a basemap; right panel shows the MRMS QPE raster classified into precipitation intensity zones. Both panels share the same Lambert Azimuthal Equal Area projection (Central Meridian: -83.216°, Latitude of Origin: 33.569°) centered on the Gulf Coast region. Raster resampled and reprojected using GDAL."
+          },
+          {
+            heading: "Design",
+            text: "QPE raster uses a diverging blue-to-red palette emphasizing extreme accumulation zones. The stall signature over Houston is immediately legible as a concentrated bull's-eye of extreme precipitation. Track symbols progress from tropical depression (small open circles) through Category 4 (large filled) using a blue-to-red categorical scheme."
+          },
+        ]
+      },
+      {
+        number: "02",
+        title:  "Hurricane Helene, 2024",
+        type:   "Raster Precipitation + Storm Track",
+        img:    "../assets/img/hurricane-helene.png",
+        methods: [
+          {
+            heading: "Event Summary",
+            text: "Hurricane Helene made landfall near Perry, Florida on September 26, 2024 as a Category 4 storm — the strongest hurricane on record to strike the Big Bend region of Florida. It rapidly tracked inland across Georgia and the Carolinas, delivering catastrophic rainfall to the Southern Appalachians. The storm resulted in 252 deaths and nearly $79 billion in damage, making it the deadliest Atlantic hurricane to strike the U.S. mainland since Hurricane Katrina in 2005."
+          },
+          {
+            heading: "Data Sources",
+            text: "Precipitation: NOAA MRMS Multi-Sensor QPE raster clipped to the storm's precipitation footprint across the Southeast and Southern Appalachians. Storm track: IBTrACS, NOAA NCEI. The rapid inland track from Florida through Georgia, Tennessee, and into the Carolinas is clearly encoded in the track record."
+          },
+          {
+            heading: "Methodology",
+            text: "Same pipeline as Harvey: Lambert Azimuthal Equal Area projection (Central Meridian: -83.216°, Latitude of Origin: 33.569°), GDAL reprojection and raster classification, IBTrACS track symbolized by Saffir-Simpson category. The shared projection and methodology makes the two maps directly comparable despite covering different regions."
+          },
+          {
+            heading: "Contrast with Harvey",
+            text: "Where Harvey's precipitation signature is a concentrated bull's-eye reflecting its stall behavior, Helene's footprint is a broad elongated swath extending hundreds of miles inland along the track corridor. The Appalachian terrain is clearly visible in the QPE raster — orographic enhancement produced extreme totals across the Blue Ridge and Black Mountains, with Asheville, NC at the center of the catastrophic flooding zone."
+          },
+          {
+            heading: "Design",
+            text: "Same QPE color ramp as Harvey for direct visual comparison. The dark basemap on the right panel intensifies the precipitation raster's color contrast and draws attention to the Appalachian precipitation corridor. Track symbols use the same category encoding as the Harvey map."
+          },
+        ]
+      },
+
+      // ── TEMPLATE ──
+      // {
+      //   number: "03",
+      //   title:  "Hurricane Name, Year",
+      //   type:   "Raster Precipitation + Storm Track",
+      //   img:    "../assets/img/hurricane-name.png",
+      //   methods: [
+      //     { heading: "Event Summary",  text: "..." },
+      //     { heading: "Data Sources",   text: "..." },
+      //     { heading: "Methodology",    text: "..." },
+      //     { heading: "Design",         text: "..." },
+      //   ]
+      // },
+    ];
+
+    // ════════════════════════════════════════════════════════════════
+    //  RENDERER — no edits needed below this line
+    // ════════════════════════════════════════════════════════════════
+    const accordion = document.getElementById('accordion');
+    accordion.innerHTML = maps.map((m, i) => `
+      <div class="accordion-item">
+        <button class="accordion-trigger" id="trigger-${i}" aria-expanded="false"
+                aria-controls="panel-${i}" onclick="toggle(${i})">
+          <span class="acc-number">${m.number}</span>
+          <span class="acc-title-wrap">
+            <span class="acc-title">${m.title}</span>
+            <span class="acc-subtitle">${m.type}</span>
+          </span>
+          <i class="ti ti-chevron-down acc-chevron" aria-hidden="true"></i>
+        </button>
+        <div class="accordion-panel" id="panel-${i}" role="region" aria-labelledby="trigger-${i}">
+          <div class="panel-image">
+            <img src="${m.img}" alt="${m.title}" loading="lazy"
+                 onclick="openLightbox('${m.img}', '${m.number} — ${m.title}')"
+                 title="Click to enlarge">
+          </div>
+          <div class="panel-text">
+            ${m.methods.map(b => `
+              <div class="method-block">
+                <h4>${b.heading}</h4>
+                <p>${b.text}</p>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>`).join('');
+
+    function toggle(i) {
+      const trigger = document.getElementById(`trigger-${i}`);
+      const panel   = document.getElementById(`panel-${i}`);
+      const isOpen  = trigger.classList.contains('open');
+      document.querySelectorAll('.accordion-trigger').forEach(t => { t.classList.remove('open'); t.setAttribute('aria-expanded','false'); });
+      document.querySelectorAll('.accordion-panel').forEach(p => p.classList.remove('open'));
+      if (!isOpen) { trigger.classList.add('open'); trigger.setAttribute('aria-expanded','true'); panel.classList.add('open'); }
+    }
+
+    function openLightbox(src, caption) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox-img').alt = caption;
+      document.getElementById('lightbox-caption').textContent = caption;
+      document.getElementById('lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox(e) {
+      if (e && e.target.tagName === 'IMG') return;
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+    const btn = document.getElementById('themeBtn');
+    function applyTheme(dark) { document.documentElement.classList.toggle('dark', dark); btn.textContent = dark ? '◐ light' : '◐ dark'; }
+    btn.addEventListener('click', () => { const d = !document.documentElement.classList.contains('dark'); localStorage.setItem('theme', d ? 'dark' : 'light'); applyTheme(d); });
+    applyTheme(localStorage.getItem('theme') === 'dark');
+  </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Population Mapping Methods — Brendan Mann</title>
   <meta name="description" content="Five-map series exploring how aggregation units, dot values, and classification methods change the spatial picture of population data.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
