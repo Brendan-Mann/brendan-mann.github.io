@@ -10,6 +10,196 @@
   ║  HOW TO USE:                                                      ║
   ║  1. Copy this file and rename it (e.g. harvey.html)              ║
   ║  2. Edit the HEAD block below (title, meta description)          ║
+  ║  3. Edit the PROJECT HEADER block in <main class="project-main">                      ║
+  ║  4. Edit the maps[] array in the <script> block                  ║
+  ║  5. Add thumbnail images to ../assets/img/                       ║
+  ║  6. Update the card link in index.html to point here             ║
+  ╚══════════════════════════════════════════════════════════════════╝
+  -->
+
+  <!-- ① Edit these two lines -->
+  <title>YOUR PROJECT TITLE — Brendan Mann</title>
+  <meta name="description" content="One sentence description of the project for SEO and link previews.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Lora:wght@400;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Lora:wght@400;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+  <nav id="topbar">
+    <a class="site-mark" href="../index.html">◈ B.MANN</a>
+    <div style="display:flex;flex:1;">
+      <a class="nav-link active" href="../index.html">Home</a>
+    </div>
+    <div class="topbar-right">
+      <a class="icon-link" href="https://github.com/Brendan-Mann" target="_blank" rel="noopener" aria-label="GitHub"><i class="ti ti-brand-github"></i></a>
+      <a class="icon-link" href="https://linkedin.com/in/brendan-mann-456452157" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="ti ti-brand-linkedin"></i></a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Toggle dark mode">◐ dark</button>
+    </div>
+  </nav>
+
+  <main class="project-main">
+
+    <!-- ② Edit this header block -->
+    <div class="project-header">
+      <p class="project-eyebrow">COURSE NAME — Course Title</p>  <!-- e.g. GIS 309 — Thematic Mapping -->
+      <h1 class="project-title">Your Project<br>Title Here</h1>
+      <p class="project-meta">Western Illinois University &nbsp;·&nbsp; Month Year</p>
+      <p class="project-desc">
+        Two to three sentence description of what this project is, what question it answers,
+        and what techniques or datasets it demonstrates. This appears below the title on the
+        project page.
+      </p>
+      <div style="margin-top:1rem;">
+        <!-- Tag colors: green (tools), blue (datasets), orange (drone/hardware), red (analysis type) -->
+        <span class="tag green">QGIS</span>
+        <span class="tag green">ArcGIS Pro</span>
+        <span class="tag blue">Your Dataset</span>
+        <span class="tag red">Analysis Type</span>
+      </div>
+    </div>
+
+    <p class="section-label">Maps</p>
+    <div class="accordion" id="accordion"></div>
+
+    <footer>Brendan Mann &middot; St. Louis, MO &middot; 2026</footer>
+  </main>
+
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Map fullscreen view" onclick="closeLightbox(event)">
+    <button id="lightbox-close" onclick="closeLightbox()" aria-label="Close"><i class="ti ti-x"></i></button>
+    <img id="lightbox-img" src="" alt="">
+    <span id="lightbox-caption"></span>
+  </div>
+
+  <script>
+    // ════════════════════════════════════════════════════════════════
+    //  ③ MAP DATA — this is the only block you need to edit.
+    //
+    //  Each object = one accordion panel.
+    //  img paths are relative to projects/ → ../assets/img/
+    //
+    //  method heading options (use any combo):
+    //    "Data Source" | "Classification" | "Design" |
+    //    "Key Findings" | "Methodology" | "Limitations" | anything
+    // ════════════════════════════════════════════════════════════════
+    const maps = [
+      {
+        number: "01",
+        title:  "Your First Map Title",
+        type:   "Map Type (e.g. Choropleth, Dot Density)",
+        img:    "../assets/img/your-image-01.png",
+        methods: [
+          {
+            heading: "Data Source",
+            text: "Describe where your data came from and any preprocessing steps."
+          },
+          {
+            heading: "Classification",
+            text: "Describe your classification method and why you chose it."
+          },
+          {
+            heading: "Design",
+            text: "Describe your color choices, symbol decisions, and layout rationale."
+          },
+        ]
+      },
+
+      // ── TEMPLATE — copy, uncomment, fill in ──────────────────
+      // {
+      //   number: "02",
+      //   title:  "Map Title",
+      //   type:   "Map Type",
+      //   img:    "../assets/img/your-image-02.png",
+      //   methods: [
+      //     { heading: "Data Source",    text: "..." },
+      //     { heading: "Classification", text: "..." },
+      //     { heading: "Design",         text: "..." },
+      //   ]
+      // },
+      // ──────────────────────────────────────────────────────────
+    ];
+
+    // ════════════════════════════════════════════════════════════════
+    //  RENDERER — no edits needed below this line
+    // ════════════════════════════════════════════════════════════════
+    const accordion = document.getElementById('accordion');
+    accordion.innerHTML = maps.map((m, i) => `
+      <div class="accordion-item">
+        <button class="accordion-trigger" id="trigger-${i}" aria-expanded="false"
+                aria-controls="panel-${i}" onclick="toggle(${i})">
+          <span class="acc-number">${m.number}</span>
+          <span class="acc-title-wrap">
+            <span class="acc-title">${m.title}</span>
+            <span class="acc-subtitle">${m.type}</span>
+          </span>
+          <i class="ti ti-chevron-down acc-chevron" aria-hidden="true"></i>
+        </button>
+        <div class="accordion-panel" id="panel-${i}" role="region" aria-labelledby="trigger-${i}">
+          <div class="panel-image">
+            <img src="${m.img}" alt="${m.title}" loading="lazy"
+                 onclick="openLightbox('${m.img}', '${m.number} — ${m.title}')"
+                 title="Click to enlarge">
+          </div>
+          <div class="panel-text">
+            ${m.methods.map(b => `
+              <div class="method-block">
+                <h4>${b.heading}</h4>
+                <p>${b.text}</p>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>`).join('');
+
+    function toggle(i) {
+      const trigger = document.getElementById(`trigger-${i}`);
+      const panel   = document.getElementById(`panel-${i}`);
+      const isOpen  = trigger.classList.contains('open');
+      document.querySelectorAll('.accordion-trigger').forEach(t => { t.classList.remove('open'); t.setAttribute('aria-expanded','false'); });
+      document.querySelectorAll('.accordion-panel').forEach(p => p.classList.remove('open'));
+      if (!isOpen) { trigger.classList.add('open'); trigger.setAttribute('aria-expanded','true'); panel.classList.add('open'); }
+    }
+
+    function openLightbox(src, caption) {
+      const lb = document.getElementById('lightbox');
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox-img').alt = caption;
+      document.getElementById('lightbox-caption').textContent = caption;
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox(e) {
+      if (e && e.target.tagName === 'IMG') return;
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+    const btn = document.getElementById('themeBtn');
+    function applyTheme(dark) { document.documentElement.classList.toggle('dark', dark); btn.textContent = dark ? '◐ light' : '◐ dark'; }
+    btn.addEventListener('click', () => { const d = !document.documentElement.classList.contains('dark'); localStorage.setItem('theme', d ? 'dark' : 'light'); applyTheme(d); });
+    applyTheme(localStorage.getItem('theme') === 'dark');
+  </script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  PROJECT PAGE TEMPLATE                                           ║
+  ║  ---------------------------------------------------------------- ║
+  ║  HOW TO USE:                                                      ║
+  ║  1. Copy this file and rename it (e.g. harvey.html)              ║
+  ║  2. Edit the HEAD block below (title, meta description)          ║
   ║  3. Edit the PROJECT HEADER block in <main>                      ║
   ║  4. Edit the maps[] array in the <script> block                  ║
   ║  5. Add thumbnail images to ../assets/img/                       ║
