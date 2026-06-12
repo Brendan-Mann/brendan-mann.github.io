@@ -10,115 +10,6 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Lora:wght@400;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    /* ── Color tokens ── */
-    :root {
-      --bg0:    #fbf1c7;
-      --bg0h:   #f9f5d7;
-      --bg1:    #ebdbb2;
-      --bg2:    #d5c4a1;
-      --bg3:    #bdae93;
-      --fg:     #3c3836;
-      --fg2:    #665c54;
-      --fg3:    #928374;
-      --accent: #b57614;
-      --green:  #79740e;
-      --blue:   #076678;
-    }
-    html.dark {
-      --bg0:    #1d2021;
-      --bg0h:   #282828;
-      --bg1:    #3c3836;
-      --bg2:    #504945;
-      --bg3:    #665c54;
-      --fg:     #ebdbb2;
-      --fg2:    #d5c4a1;
-      --fg3:    #bdae93;
-      --accent: #d79921;
-      --green:  #b8bb26;
-      --blue:   #83a598;
-    }
-
-    /* ── Base ── */
-    html, body {
-      background: var(--bg0);
-      color: var(--fg);
-      font-family: 'IBM Plex Sans', sans-serif;
-      font-size: 16px;
-      line-height: 1.6;
-      scroll-behavior: smooth;
-    }
-
-    /* ── Topbar ── */
-    #topbar {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 48px;
-      background: var(--bg0h);
-      border-bottom: 1px solid var(--bg2);
-      padding: 0 2.5rem;
-      display: flex;
-      align-items: center;
-      z-index: 100;
-      transition: background 0.2s;
-    }
-    .site-mark {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--accent);
-      letter-spacing: 0.04em;
-      margin-right: 2rem;
-      white-space: nowrap;
-      text-decoration: none;
-    }
-    .nav-links { display: flex; flex: 1; }
-    .nav-link {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: var(--fg3);
-      text-decoration: none;
-      padding: 0 1rem;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -1px;
-      transition: color 0.15s, border-color 0.15s;
-    }
-    .nav-link:hover { color: var(--fg); }
-    .nav-link.active { color: var(--accent); border-bottom-color: var(--accent); }
-    .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-left: auto;
-    }
-    .icon-link {
-      color: var(--fg2);
-      font-size: 18px;
-      line-height: 1;
-      text-decoration: none;
-      transition: color 0.15s;
-    }
-    .icon-link:hover { color: var(--accent); }
-    .theme-toggle {
-      background: none;
-      border: 1px solid var(--fg2);
-      border-radius: 3px;
-      color: var(--fg2);
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 10px;
-      padding: 4px 9px;
-      cursor: pointer;
-      letter-spacing: 0.04em;
-      transition: color 0.15s, border-color 0.15s;
-    }
-    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
-
     /* ── Layout ── */
     main { padding-top: 48px; }
     section {
@@ -320,6 +211,7 @@
       section { padding: 3.5rem 1.25rem; }
     }
   </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -327,7 +219,7 @@
        TOPBAR — edit site-mark text and social URLs below
   ═══════════════════════════════════════════════════════════ -->
   <nav id="topbar">
-    <a class="site-mark" href="#hero">B. ▴ GIS</a>
+    <a class="site-mark" href="#hero">◈ B.MANN</a>
     <div class="nav-links">
       <a class="nav-link active" href="#hero">Home</a>
       <a class="nav-link" href="#about">About</a>
@@ -335,10 +227,10 @@
       <a class="nav-link" href="#contact">Contact</a>
     </div>
     <div class="topbar-right">
-      <a class="icon-link" href="https://github.com/YOUR_GITHUB" target="_blank" rel="noopener" aria-label="GitHub">
+      <a class="icon-link" href="https://github.com/Brendan-Mann" target="_blank" rel="noopener" aria-label="GitHub">
         <i class="ti ti-brand-github"></i>
       </a>
-      <a class="icon-link" href="https://linkedin.com/in/YOUR_LINKEDIN" target="_blank" rel="noopener" aria-label="LinkedIn">
+      <a class="icon-link" href="https://linkedin.com/in/brendan-mann-456452157" target="_blank" rel="noopener" aria-label="LinkedIn">
         <i class="ti ti-brand-linkedin"></i>
       </a>
       <button class="theme-toggle" id="themeBtn" aria-label="Toggle dark mode">◐ dark</button>
@@ -408,7 +300,7 @@
   </main>
 
   <footer>
-    <span>Built with QGIS, plain HTML, and strong opinions about color palettes.</span>
+    <span>Brendan Mann &middot; St. Louis, MO &middot; 2026</span>
   </footer>
 
   <script>
@@ -556,9 +448,9 @@
     // icon: any Tabler icon name (without "ti-"), e.g. "mail", "map-pin"
     // href: use "mailto:..." for email, full URL for links, "" for plain text
     const contactItems = [
-      { icon: "mail",           label: "your@email.com",              href: "mailto:your@email.com"               },
-      { icon: "brand-github",   label: "github.com/YOUR_GITHUB",      href: "https://github.com/YOUR_GITHUB"      },
-      { icon: "brand-linkedin", label: "linkedin.com/in/YOUR_LINKEDIN",href: "https://linkedin.com/in/YOUR_LINKEDIN"},
+      { icon: "mail",           label: "brendan.mann@proton.me",              href: "mailto:brendan.mann@proton.me"               },
+      { icon: "brand-github",   label: "github.com/Brendan-Mann",      href: "https://github.com/Brendan-Mann"      },
+      { icon: "brand-linkedin", label: "linkedin.com/in/brendan-mann-456452157",href: "https://linkedin.com/in/brendan-mann-456452157"},
       { icon: "map-pin",        label: "St. Louis, MO",               href: ""                                    },
     ];
 
