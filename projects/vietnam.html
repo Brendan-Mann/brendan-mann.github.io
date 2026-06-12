@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bombing Missions of the Vietnam War — Brendan Mann</title>
+  <meta name="description" content="Dot density map of U.S. bombing sorties across Vietnam, Laos, and Cambodia, 1965–1975, with embedded temporal bar chart of monthly mission totals.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Lora:wght@400;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg0: #fbf1c7; --bg0h: #f9f5d7; --bg1: #ebdbb2; --bg2: #d5c4a1;
+      --bg3: #bdae93; --fg: #3c3836; --fg2: #665c54; --fg3: #928374;
+      --accent: #b57614; --green: #79740e; --blue: #076678;
+    }
+    html.dark {
+      --bg0: #1d2021; --bg0h: #282828; --bg1: #3c3836; --bg2: #504945;
+      --bg3: #665c54; --fg: #ebdbb2; --fg2: #d5c4a1; --fg3: #bdae93;
+      --accent: #d79921; --green: #b8bb26; --blue: #83a598;
+    }
+    html, body { background: var(--bg0); color: var(--fg); font-family: 'IBM Plex Sans', sans-serif; font-size: 16px; line-height: 1.6; }
+    #topbar { position: fixed; top: 0; left: 0; right: 0; height: 48px; background: var(--bg0h); border-bottom: 1px solid var(--bg2); padding: 0 2.5rem; display: flex; align-items: center; z-index: 100; }
+    .site-mark { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; color: var(--accent); letter-spacing: 0.04em; text-decoration: none; margin-right: 2rem; white-space: nowrap; }
+    .nav-link { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--fg3); text-decoration: none; padding: 0 1rem; height: 48px; display: flex; align-items: center; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s, border-color 0.15s; }
+    .nav-link:hover { color: var(--fg); }
+    .nav-link.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .topbar-right { display: flex; align-items: center; gap: 16px; margin-left: auto; }
+    .icon-link { color: var(--fg2); font-size: 18px; text-decoration: none; transition: color 0.15s; }
+    .icon-link:hover { color: var(--accent); }
+    .theme-toggle { background: none; border: 1px solid var(--fg2); border-radius: 3px; color: var(--fg2); font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 4px 9px; cursor: pointer; letter-spacing: 0.04em; transition: color 0.15s, border-color 0.15s; }
+    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+
+    main { padding-top: 48px; max-width: 1100px; margin: 0 auto; padding-left: 2.5rem; padding-right: 2.5rem; }
+
+    .project-header { padding: 3.5rem 0 2.5rem; border-bottom: 1px solid var(--bg1); }
+    .project-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.6rem; }
+    .project-title { font-family: 'Lora', serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 600; color: var(--fg); line-height: 1.2; margin-bottom: 0.75rem; }
+    .project-meta { font-size: 13px; color: var(--fg3); font-family: 'IBM Plex Mono', monospace; margin-bottom: 1rem; }
+    .project-desc { font-size: 15px; color: var(--fg2); max-width: 680px; line-height: 1.7; }
+
+    .tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 2px 8px; border-radius: 3px; background: var(--bg1); color: var(--fg2); margin: 2px 3px 2px 0; letter-spacing: 0.03em; }
+    .tag.green  { background: #d9e8a0; color: #3d4a00; }
+    .tag.blue   { background: #c4dde3; color: #02414e; }
+    .tag.orange { background: #f2d9b8; color: #6b2d00; }
+    .tag.red    { background: #f2cbb8; color: #6b1a00; }
+    html.dark .tag        { background: var(--bg2); color: var(--fg2); }
+    html.dark .tag.green  { background: #3d4a00; color: #d9e8a0; }
+    html.dark .tag.blue   { background: #02414e; color: #c4dde3; }
+    html.dark .tag.orange { background: #4a2500; color: #f2c98a; }
+    html.dark .tag.red    { background: #4a1000; color: #f2c0a8; }
+
+    .section-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; padding-top: 2.5rem; }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--bg2); }
+
+    /* ── Single map display ── */
+    .map-display {
+      border: 1px solid var(--bg2);
+      border-radius: 4px;
+      overflow: hidden;
+      background: var(--bg0h);
+    }
+    .map-image {
+      background: var(--bg1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--bg2);
+    }
+    .map-image img {
+      max-width: 100%;
+      max-height: 80vh;
+      height: auto;
+      width: auto;
+      border-radius: 2px;
+      display: block;
+      cursor: zoom-in;
+      transition: opacity 0.15s;
+    }
+    .map-image img:hover { opacity: 0.88; }
+
+    /* ── Method blocks below the map ── */
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0;
+    }
+    .method-block {
+      padding: 1.5rem;
+      border-right: 1px solid var(--bg2);
+      border-bottom: 1px solid var(--bg2);
+    }
+    .method-block:last-child { border-right: none; }
+    .method-block h4 { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.4rem; }
+    .method-block p { font-size: 13px; color: var(--fg2); line-height: 1.65; }
+
+    /* ── Lightbox ── */
+    #lightbox { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.92); align-items: center; justify-content: center; cursor: zoom-out; }
+    #lightbox.open { display: flex; }
+    #lightbox img { max-width: 92vw; max-height: 92vh; border-radius: 3px; box-shadow: 0 8px 40px rgba(0,0,0,0.6); object-fit: contain; cursor: default; }
+    #lightbox-close { position: absolute; top: 1.25rem; right: 1.5rem; background: none; border: none; color: #ebdbb2; font-size: 28px; cursor: pointer; line-height: 1; opacity: 0.7; transition: opacity 0.15s; }
+    #lightbox-close:hover { opacity: 1; }
+    #lightbox-caption { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #bdae93; white-space: nowrap; }
+
+    footer { padding: 2rem 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--fg3); letter-spacing: 0.04em; border-top: 1px solid var(--bg1); margin-top: 3rem; }
+
+    @media (max-width: 700px) {
+      main { padding-left: 1.25rem; padding-right: 1.25rem; }
+      #topbar { padding: 0 1.25rem; }
+      .site-mark { margin-right: 1rem; }
+      .method-block { border-right: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav id="topbar">
+    <a class="site-mark" href="../index.html">B. ▴ GIS</a>
+    <div style="display:flex;flex:1;">
+      <a class="nav-link active" href="../index.html">Home</a>
+    </div>
+    <div class="topbar-right">
+      <a class="icon-link" href="https://github.com/Brendan-Mann" target="_blank" rel="noopener" aria-label="GitHub"><i class="ti ti-brand-github"></i></a>
+      <a class="icon-link" href="https://linkedin.com/in/YOUR_LINKEDIN" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="ti ti-brand-linkedin"></i></a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Toggle dark mode">◐ dark</button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="project-header">
+      <p class="project-eyebrow">GIS 309 — Thematic Mapping</p>
+      <h1 class="project-title">Bombing Missions of<br>the Vietnam War</h1>
+      <p class="project-meta">Western Illinois University &nbsp;·&nbsp; February 2026</p>
+      <p class="project-desc">
+        Between 1965 and 1975, the United States and its allies dropped millions of bombs on Vietnam,
+        Laos, and Cambodia — one of the largest aerial bombardments in history. This map, built from
+        declassified THOR mission reports, visualizes every recorded bombing sortie with available
+        geographic data, overlaid on a hillshade relief base and paired with a temporal bar chart
+        of monthly mission totals.
+      </p>
+      <div style="margin-top:1rem;">
+        <span class="tag green">ArcGIS Pro</span>
+        <span class="tag blue">THOR Database</span>
+        <span class="tag blue">SRTM Hillshade</span>
+        <span class="tag red">Dot Density</span>
+        <span class="tag red">Historical Cartography</span>
+      </div>
+    </div>
+
+    <p class="section-label">Map</p>
+    <div class="map-display">
+      <div class="map-image">
+        <img src="../assets/img/vietnam-bombings.png"
+             alt="Bombing Missions of the Vietnam War"
+             onclick="openLightbox('../assets/img/vietnam-bombings.png', 'Bombing Missions of the Vietnam War, 1965–1975')"
+             title="Click to enlarge">
+      </div>
+      <div class="method-grid">
+        <div class="method-block">
+          <h4>Data Source</h4>
+          <p>Theater History of Operations (THOR) database, declassified U.S. Air Force mission reports digitized by the Defense Digital Service. Each record represents a single bombing sortie with coordinates, date, aircraft type, and ordnance. Records with missing or incomplete geographic data were excluded.</p>
+        </div>
+        <div class="method-block">
+          <h4>Dot Density</h4>
+          <p>Each dot represents one recorded bombing sortie. No aggregation was applied — the raw point density directly conveys the spatial concentration of missions. The Ho Chi Minh trail corridor through Laos and the coastal lowlands of South Vietnam are immediately legible as the highest-intensity zones.</p>
+        </div>
+        <div class="method-block">
+          <h4>Base Map</h4>
+          <p>SRTM 30m hillshade relief provides topographic context, making the relationship between bombing patterns and terrain — particularly the trail corridor through the Annamite Mountains — visually apparent. Surrounding countries are rendered in muted gray to focus attention on the three bombed nations.</p>
+        </div>
+        <div class="method-block">
+          <h4>Design</h4>
+          <p>Purple dot density on a gray relief base, with orange boundary highlighting for Vietnam, Laos, and Cambodia. The purple-orange palette avoids the red-war-map cliché while maintaining visual weight. An embedded bar chart shows monthly mission totals 1965–1975, providing temporal context for the spatial pattern — the 1968–1969 peak corresponds to the Tet Offensive period and subsequent escalation.</p>
+        </div>
+      </div>
+    </div>
+
+    <footer>Built with QGIS, plain HTML, and strong opinions about color palettes.</footer>
+  </main>
+
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Map fullscreen view" onclick="closeLightbox(event)">
+    <button id="lightbox-close" onclick="closeLightbox()" aria-label="Close"><i class="ti ti-x"></i></button>
+    <img id="lightbox-img" src="" alt="">
+    <span id="lightbox-caption"></span>
+  </div>
+
+  <script>
+    function openLightbox(src, caption) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox-img').alt = caption;
+      document.getElementById('lightbox-caption').textContent = caption;
+      document.getElementById('lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox(e) {
+      if (e && e.target.tagName === 'IMG') return;
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+    const btn = document.getElementById('themeBtn');
+    function applyTheme(dark) { document.documentElement.classList.toggle('dark', dark); btn.textContent = dark ? '◐ light' : '◐ dark'; }
+    btn.addEventListener('click', () => { const d = !document.documentElement.classList.contains('dark'); localStorage.setItem('theme', d ? 'dark' : 'light'); applyTheme(d); });
+    applyTheme(localStorage.getItem('theme') === 'dark');
+  </script>
+</body>
+</html>
