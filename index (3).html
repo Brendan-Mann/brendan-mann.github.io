@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brendan Mann — GIS Portfolio</title>
+  <meta name="description" content="GIS analyst, cartographer, and remote sensing specialist based in St. Louis, MO.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Lora:wght@400;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Color tokens ── */
+    :root {
+      --bg0:    #fbf1c7;
+      --bg0h:   #f9f5d7;
+      --bg1:    #ebdbb2;
+      --bg2:    #d5c4a1;
+      --bg3:    #bdae93;
+      --fg:     #3c3836;
+      --fg2:    #665c54;
+      --fg3:    #928374;
+      --accent: #b57614;
+      --green:  #79740e;
+      --blue:   #076678;
+    }
+    html.dark {
+      --bg0:    #1d2021;
+      --bg0h:   #282828;
+      --bg1:    #3c3836;
+      --bg2:    #504945;
+      --bg3:    #665c54;
+      --fg:     #ebdbb2;
+      --fg2:    #d5c4a1;
+      --fg3:    #bdae93;
+      --accent: #d79921;
+      --green:  #b8bb26;
+      --blue:   #83a598;
+    }
+
+    /* ── Base ── */
+    html, body {
+      background: var(--bg0);
+      color: var(--fg);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+
+    /* ── Topbar ── */
+    #topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 48px;
+      background: var(--bg0h);
+      border-bottom: 1px solid var(--bg2);
+      padding: 0 2.5rem;
+      display: flex;
+      align-items: center;
+      z-index: 100;
+      transition: background 0.2s;
+    }
+    .site-mark {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      margin-right: 2rem;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; flex: 1; }
+    .nav-link {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--fg3);
+      text-decoration: none;
+      padding: 0 1rem;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .nav-link:hover { color: var(--fg); }
+    .nav-link.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-left: auto;
+    }
+    .icon-link {
+      color: var(--fg2);
+      font-size: 18px;
+      line-height: 1;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .icon-link:hover { color: var(--accent); }
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--fg2);
+      border-radius: 3px;
+      color: var(--fg2);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      padding: 4px 9px;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* ── Layout ── */
+    main { padding-top: 48px; }
+    section {
+      padding: 5rem 10vw;
+      border-bottom: 1px solid var(--bg1);
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--bg2);
+    }
+
+    /* ── Hero ── */
+    #hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding-bottom: 4rem;
+    }
+    #topo-bg {
+      position: absolute;
+      inset: 0; width: 100%; height: 100%;
+      opacity: 0.18;
+    }
+    .hero-eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+      position: relative;
+    }
+    .hero-title {
+      font-family: 'Lora', serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 600;
+      color: var(--fg);
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .hero-sub {
+      font-size: 15px;
+      color: var(--fg2);
+      max-width: 560px;
+      line-height: 1.7;
+      position: relative;
+    }
+
+    /* ── About ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+    }
+    .about-block h3 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--fg3);
+      margin-bottom: 0.5rem;
+    }
+    .about-block p {
+      font-size: 14px;
+      color: var(--fg2);
+      line-height: 1.65;
+    }
+
+    /* ── Tags ── */
+    .tag {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 3px;
+      background: var(--bg1);
+      color: var(--fg2);
+      margin: 2px 3px 2px 0;
+      letter-spacing: 0.03em;
+    }
+    .tag.green  { background: #d9e8a0; color: #3d4a00; }
+    .tag.blue   { background: #c4dde3; color: #02414e; }
+    .tag.orange { background: #f2d9b8; color: #6b2d00; }
+    .tag.red    { background: #f2cbb8; color: #6b1a00; }
+    html.dark .tag        { background: var(--bg2); color: var(--fg2); }
+    html.dark .tag.green  { background: #3d4a00; color: #d9e8a0; }
+    html.dark .tag.blue   { background: #02414e; color: #c4dde3; }
+    html.dark .tag.orange { background: #4a2500; color: #f2c98a; }
+    html.dark .tag.red    { background: #4a1000; color: #f2c0a8; }
+
+    /* ── Project cards ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .project-card {
+      background: var(--bg0h);
+      border: 1px solid var(--bg2);
+      border-radius: 4px;
+      overflow: hidden;
+      text-decoration: none;
+      display: block;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .project-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .card-thumb {
+      height: 160px;
+      background: var(--bg1);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .card-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+    /* Fallback icon shown when no image */
+    .card-thumb .thumb-icon {
+      font-size: 36px;
+      color: var(--bg3);
+      position: absolute;
+    }
+    .card-body { padding: 1rem 1.1rem 1.1rem; }
+    .card-title {
+      font-family: 'Lora', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--fg);
+      margin-bottom: 0.35rem;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: var(--fg3);
+      line-height: 1.55;
+      margin-bottom: 0.75rem;
+    }
+
+    /* ── Contact ── */
+    .contact-row {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 400px;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+      color: var(--fg2);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .contact-item:hover { color: var(--accent); }
+    .contact-item i { color: var(--accent); font-size: 18px; flex-shrink: 0; }
+
+    /* ── Footer ── */
+    footer {
+      padding: 2rem 10vw;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--fg3);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      #topbar { padding: 0 1.25rem; }
+      .site-mark { margin-right: 1rem; }
+      .nav-link { padding: 0 0.6rem; font-size: 10px; }
+      section { padding: 3.5rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       TOPBAR — edit site-mark text and social URLs below
+  ═══════════════════════════════════════════════════════════ -->
+  <nav id="topbar">
+    <a class="site-mark" href="#hero">B. ▴ GIS</a>
+    <div class="nav-links">
+      <a class="nav-link active" href="#hero">Home</a>
+      <a class="nav-link" href="#about">About</a>
+      <a class="nav-link" href="#projects">Projects</a>
+      <a class="nav-link" href="#contact">Contact</a>
+    </div>
+    <div class="topbar-right">
+      <a class="icon-link" href="https://github.com/YOUR_GITHUB" target="_blank" rel="noopener" aria-label="GitHub">
+        <i class="ti ti-brand-github"></i>
+      </a>
+      <a class="icon-link" href="https://linkedin.com/in/YOUR_LINKEDIN" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <i class="ti ti-brand-linkedin"></i>
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Toggle dark mode">◐ dark</button>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         HERO — edit tagline and subtitle in heroContent below
+    ═══════════════════════════════════════════════════════════ -->
+    <section id="hero">
+      <svg id="topo-bg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice"
+           xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M-20,220 Q150,130 300,200 Q450,270 600,170 Q750,70 900,155 Q1050,240 1220,190"
+              fill="none" stroke="#b57614" stroke-width="1.4"/>
+        <path d="M-20,248 Q150,158 300,228 Q450,298 600,198 Q750,98 900,183 Q1050,268 1220,218"
+              fill="none" stroke="#b57614" stroke-width="1.4"/>
+        <path d="M-20,276 Q150,186 300,256 Q450,326 600,226 Q750,126 900,211 Q1050,296 1220,246"
+              fill="none" stroke="#b57614" stroke-width="1.4"/>
+        <path d="M-20,304 Q150,214 300,284 Q450,354 600,254 Q750,154 900,239 Q1050,324 1220,274"
+              fill="none" stroke="#b57614" stroke-width="1.3"/>
+        <path d="M-20,332 Q150,242 300,312 Q450,382 600,282 Q750,182 900,267 Q1050,352 1220,302"
+              fill="none" stroke="#b57614" stroke-width="1.3"/>
+        <path d="M-20,360 Q150,270 300,340 Q450,410 600,310 Q750,210 900,295 Q1050,380 1220,330"
+              fill="none" stroke="#b57614" stroke-width="1.2"/>
+        <path d="M120,80 Q250,30 380,85 Q490,135 560,78 Q650,18 760,72 Q860,122 940,75"
+              fill="none" stroke="#b57614" stroke-width="1.1"/>
+        <path d="M120,104 Q250,54 380,109 Q490,159 560,102 Q650,42 760,96 Q860,146 940,99"
+              fill="none" stroke="#b57614" stroke-width="1.1"/>
+        <path d="M120,128 Q250,78 380,133 Q490,183 560,126 Q650,66 760,120 Q860,170 940,123"
+              fill="none" stroke="#b57614" stroke-width="1"/>
+      </svg>
+      <p class="hero-eyebrow">Portfolio</p>
+      <h1 class="hero-title">Maps built from<br>real questions.</h1>
+      <p class="hero-sub">GIS analyst, remote sensing, and cartographer based in St. Louis.
+        Army intelligence background. FAA Part 107 certified.</p>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ABOUT — edit aboutBlocks and toolTags arrays in the
+         <script> section below. No HTML changes needed.
+    ═══════════════════════════════════════════════════════════ -->
+    <section id="about">
+      <p class="section-label">About</p>
+      <div class="about-grid" id="aboutGrid"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         PROJECTS — add/edit entries in the projects array in the
+         <script> section below. No HTML changes needed.
+         Thumbnail images go in assets/img/
+    ═══════════════════════════════════════════════════════════ -->
+    <section id="projects">
+      <p class="section-label">Projects</p>
+      <div class="card-grid" id="cardGrid"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         CONTACT — edit contactItems array in the <script> below
+    ═══════════════════════════════════════════════════════════ -->
+    <section id="contact">
+      <p class="section-label">Contact</p>
+      <div class="contact-row" id="contactRow"></div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Built with QGIS, plain HTML, and strong opinions about color palettes.</span>
+  </footer>
+
+  <script>
+    // ════════════════════════════════════════════════════════════════
+    //  SITE DATA — edit everything in this block to update the site.
+    //  Nothing below the "RENDERER" comment needs to be touched.
+    // ════════════════════════════════════════════════════════════════
+
+    // ── About blocks ─────────────────────────────────────────────
+    // Add, remove, or reorder objects freely. The grid reflows.
+    const aboutBlocks = [
+      {
+        heading: "Background",
+        text: "US Army Intelligence Analyst and Forward Observer. Now applying geospatial tradecraft to environmental analysis, atmospheric sciences, and open-source GIS."
+      },
+      {
+        heading: "Currently Studying",
+        text: "B.S. Geography & Atmospheric Sciences, Western Illinois University. Advanced Cartography (GIS 402G) and Digital Earth (GIS 108), Fall 2026."
+      },
+      {
+        heading: "Tools",
+        // tags: array of { label, color } — color options: green | blue | orange | red | (blank for neutral)
+        tags: [
+          { label: "QGIS",          color: "green"  },
+          { label: "ArcGIS Pro",    color: "green"  },
+          { label: "GDAL/OGR",      color: "green"  },
+          { label: "PostGIS",       color: "blue"   },
+          { label: "Python",        color: "blue"   },
+          { label: "DJI Mini 4 Pro",color: "orange" },
+          { label: "FAA Part 107",  color: "orange" },
+        ]
+      },
+      {
+        heading: "Interests",
+        text: "Watershed analysis, precipitation modeling, drone remote sensing, open data pipelines, environmental consulting."
+      },
+    ];
+
+    // ── Projects ──────────────────────────────────────────────────
+    // thumb: path relative to index.html, e.g. "assets/img/foo.png"
+    //        Leave as "" to show a generic map icon placeholder.
+    // link:  URL for the card. Use "#projects" as a stub until the
+    //        project page exists.
+    // tags:  same { label, color } objects as aboutBlocks above.
+    const projects = [
+      {
+        title: "Washington State Environmental Mapping",
+        desc:  "Five-map series: forest cover choropleth, bivariate fire/drought risk, protected lands, stream discharge, and Bald Eagle observation density.",
+        thumb: "assets/img/washington-bivariate.png",
+        tags: [
+          { label: "QGIS",      color: "green" },
+          { label: "ArcGIS Pro",color: "green" },
+          { label: "NLCD",      color: "blue"  },
+          { label: "GBIF",      color: "blue"  },
+          { label: "USFS",      color: "blue"  },
+        ],
+        link: "#projects"   // TODO: replace with projects/washington.html
+      },
+      {
+        title: "Hurricane Harvey Precipitation Analysis",
+        desc:  "MRMS QPE raster pipeline for Hurricane Harvey. Full reprojection, zonal statistics, and two-panel cartographic output.",
+        thumb: "assets/img/harvey.png",
+        tags: [
+          { label: "GDAL",   color: "green" },
+          { label: "QGIS",   color: "green" },
+          { label: "Python", color: "blue"  },
+          { label: "MRMS",   color: "blue"  },
+        ],
+        link: "#projects"   // TODO: replace with projects/harvey.html
+      },
+      {
+        title: "Drone Remote Sensing",
+        desc:  "FAA Part 107 aerial imagery with the DJI Mini 4 Pro for site analysis and orthomosaic mapping.",
+        thumb: "",           // no image yet — shows placeholder icon
+        tags: [
+          { label: "DJI Mini 4 Pro", color: "orange" },
+          { label: "FAA Part 107",   color: "orange" },
+        ],
+        link: "#projects"
+      },
+
+      // ── TEMPLATE — copy the block below, uncomment, and fill in ──
+      // {
+      //   title: "Project Title",
+      //   desc:  "One or two sentence description.",
+      //   thumb: "assets/img/your-thumbnail.png",
+      //   tags: [
+      //     { label: "Tool",    color: "green"  },
+      //     { label: "Dataset", color: "blue"   },
+      //   ],
+      //   link: "projects/your-project.html"
+      // },
+      // ─────────────────────────────────────────────────────────────
+    ];
+
+    // ── Contact items ─────────────────────────────────────────────
+    // icon: any Tabler icon name (without "ti-"), e.g. "mail", "map-pin"
+    // href: use "mailto:..." for email, full URL for links, "" for plain text
+    const contactItems = [
+      { icon: "mail",           label: "your@email.com",              href: "mailto:your@email.com"               },
+      { icon: "brand-github",   label: "github.com/YOUR_GITHUB",      href: "https://github.com/YOUR_GITHUB"      },
+      { icon: "brand-linkedin", label: "linkedin.com/in/YOUR_LINKEDIN",href: "https://linkedin.com/in/YOUR_LINKEDIN"},
+      { icon: "map-pin",        label: "St. Louis, MO",               href: ""                                    },
+    ];
+
+
+    // ════════════════════════════════════════════════════════════════
+    //  RENDERER — no edits needed below this line
+    // ════════════════════════════════════════════════════════════════
+
+    // ── Build tag HTML ────────────────────────────────────────────
+    function renderTags(tags) {
+      return tags.map(t =>
+        `<span class="tag${t.color ? ' ' + t.color : ''}">${t.label}</span>`
+      ).join('');
+    }
+
+    // ── About grid ───────────────────────────────────────────────
+    document.getElementById('aboutGrid').innerHTML = aboutBlocks.map(b => {
+      const content = b.tags
+        ? `<p>${renderTags(b.tags)}</p>`
+        : `<p>${b.text}</p>`;
+      return `<div class="about-block"><h3>${b.heading}</h3>${content}</div>`;
+    }).join('');
+
+    // ── Project cards ────────────────────────────────────────────
+    document.getElementById('cardGrid').innerHTML = projects.map(p => {
+      const thumbHTML = p.thumb
+        ? `<img src="${p.thumb}" alt="${p.title}" loading="lazy">`
+        : `<i class="ti ti-map-2 thumb-icon" aria-hidden="true"></i>`;
+      return `
+        <a class="project-card" href="${p.link}">
+          <div class="card-thumb">${thumbHTML}</div>
+          <div class="card-body">
+            <p class="card-title">${p.title}</p>
+            <p class="card-desc">${p.desc}</p>
+            ${renderTags(p.tags)}
+          </div>
+        </a>`;
+    }).join('');
+
+    // ── Contact row ──────────────────────────────────────────────
+    document.getElementById('contactRow').innerHTML = contactItems.map(c => {
+      const tag = c.href ? 'a' : 'span';
+      const attrs = c.href
+        ? `href="${c.href}"${c.href.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}`
+        : '';
+      return `<${tag} class="contact-item" ${attrs}>
+        <i class="ti ti-${c.icon}" aria-hidden="true"></i>${c.label}
+      </${tag}>`;
+    }).join('');
+
+    // ── Theme toggle ─────────────────────────────────────────────
+    const btn = document.getElementById('themeBtn');
+    function applyTheme(dark) {
+      document.documentElement.classList.toggle('dark', dark);
+      btn.textContent = dark ? '◐ light' : '◐ dark';
+    }
+    btn.addEventListener('click', () => {
+      const isDark = !document.documentElement.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      applyTheme(isDark);
+    });
+    applyTheme(localStorage.getItem('theme') === 'dark');
+
+    // ── Active nav on scroll (IntersectionObserver) ───────────────
+    const navLinks = document.querySelectorAll('.nav-link');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navLinks.forEach(l => l.classList.remove('active'));
+          const match = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+          if (match) match.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    ['hero','about','projects','contact'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+  </script>
+
+</body>
+</html>
