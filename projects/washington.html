@@ -1,3 +1,104 @@
+Skip to content
+Brendan-Mann
+brendan-mann.github.io
+Repository navigation
+Code
+Issues
+Pull requests
+Actions
+Projects
+Security and quality
+Insights
+Settings
+brendan-mann.github.io/projects
+/
+washington.html
+in
+main
+
+Edit
+
+Preview
+Indent mode
+
+Spaces
+Indent size
+
+2
+Line wrap mode
+
+No wrap
+Editing washington.html file contents
+  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,170 +169,5 @@
   <script>
     // ════════════════════════════════════════════════════════════════
     //  MAP DATA
-    //  section: optional — inserts a labeled divider above this item
-    // ════════════════════════════════════════════════════════════════
-    const maps = [
-      {
-        section:  "Environmental",
-        number:   "01",
-        title:    "Forest Cover by County",
-        type:     "Univariate Choropleth",
-        img:      "../assets/img/washington-choropleth.png",
-        methods: [
-          { heading: "Data Source", text: "National Land Cover Database (NLCD) 2021, Multi-Resolution Land Characteristics Consortium (MRLC). Deciduous, Evergreen, and Mixed Forest classes reclassified and aggregated to county level using Zonal Statistics." },
-          { heading: "Classification", text: "Natural Breaks (Jenks). Forest cover in Washington is bimodally distributed across the Cascade Range — heavily forested western counties vs. semi-arid eastern plateau. Jenks minimizes within-class variance and maximizes between-class differences, making it well-suited for this dataset." },
-          { heading: "Design", text: "Yellow-Green sequential ramp. Lighter values represent lower forest cover; darker values higher cover. Green was chosen for its intuitive association with forested landscapes." },
-        ]
-      },
-      {
-        number: "02",
-        title:  "Fire and Drought Risk",
-        type:   "Bivariate Choropleth",
-        img:    "../assets/img/washington-bivariate.png",
-        methods: [
-          { heading: "Data Sources", text: "USFS Wildfire Risk to Communities — Wildfire Hazard Potential (Image Service), aggregated to counties via Zonal Statistics. U.S. Drought Monitor (USDM), May 5, 2026, joined to counties via Spatial Join (mean)." },
-          { heading: "Classification", text: "3×3 bivariate equal-interval classification. Each variable independently classed into Low, Medium, and High, then combined into a 3×3 color matrix to reveal counties where both environmental stressors are simultaneously elevated." },
-          { heading: "Design", text: "Tan-purple-brown bivariate palette. Increasing fire hazard shifts toward yellow-tan; increasing drought severity shifts toward purple. Counties where both variables are high converge toward brown." },
-        ]
-      },
-      {
-        number: "03",
-        title:  "Protected Land Area",
-        type:   "Graduated Symbol",
-        img:    "../assets/img/washington-graduated.png",
-        methods: [
-          { heading: "Data Source", text: "PAD-US 4.0, USGS Gap Analysis Project. Total protected acreage per county calculated using Summarize Within, summing GIS_Acres across each county boundary." },
-          { heading: "Classification", text: "Manual classification with five round-number breaks: <100K; 100K–500K; 500K–1M; 1M–2M; >2M acres. Manual breaks chosen to prioritize legibility and interpretability over statistical optimization." },
-          { heading: "Design", text: "Single yellow hue scaled by symbol size. Yellow matches the Washington State flag palette. Size is the sole visual variable, keeping color available for potential future overlays." },
-        ]
-      },
-      {
-        number: "04",
-        title:  "River and Stream Discharge",
-        type:   "Proportional Symbol",
-        img:    "../assets/img/washington-proportional.png",
-        methods: [
-          { heading: "Data Source", text: "NOAA/NWS Live Stream Gauges accessed via USGS Water Data (waterdata.usgs.gov), May 12, 2026. Discharge values represent real-time flow in cubic feet per second (cfs) at active gauging stations." },
-          { heading: "Classification", text: "No classification applied. Circle area is scaled mathematically proportional to discharge value. Gauging stations on the Columbia and Snake Rivers exceeding 50,000 cfs were excluded — their inclusion compresses all other symbols into near-identical sizes." },
-          { heading: "Design", text: "Single blue hue. Proportional (not graduated) symbols preserve the continuous nature of discharge data without imposing artificial class breaks." },
-        ]
-      },
-      {
-        number: "05",
-        title:  "Bald Eagle Observations",
-        type:   "Dot Density",
-        img:    "../assets/img/washington-dotdensity.png",
-        methods: [
-          { heading: "Data Source", text: "Global Biodiversity Information Facility (GBIF), Bald Eagle (Haliaeetus leucocephalus) occurrence records, accessed May 12, 2026. Records imported as XY point data, clipped to Washington State boundary, and spatially joined to ACS Population tract boundaries." },
-          { heading: "Classification", text: "1 dot = 50 observations. Calibrated to produce readable density variation — low enough to show clustering in the Puget Sound region, high enough to avoid overplotting in the highest-density tracts." },
-          { heading: "Design", text: "Single green hue matching the Washington State flag. Dot density chosen over choropleth to preserve the geographic clustering signal in the raw observation data rather than normalizing by county area." },
-        ]
-      },
-      {
-        section: "Socioeconomic",
-        number:  "06",
-        title:   "Median Household Income",
-        type:    "Choropleth + Histogram",
-        img:     "../assets/img/washington-income.png",
-        methods: [
-          { heading: "Data Source", text: "U.S. Census Bureau American Community Survey (ACS) 5-year estimates, Median Household Income by census tract. Data joined to Washington State census tract boundaries." },
-          { heading: "Classification", text: "Equal Interval with five classes ($18,000–$64,000; $65,000–$110,000; $120,000–$160,000; $170,000–$200,000; $210,000–$250,000). Equal Interval was chosen to allow straightforward comparison of income levels at consistent, evenly-spaced thresholds. The embedded histogram shows the full distribution of tract-level median incomes." },
-          { heading: "Design", text: "Yellow-green sequential ramp. The embedded bar chart below the map shows the distribution of median household income across all Washington tracts, illustrating the right-skewed distribution and the concentration of tracts in the $75,000–$130,000 range. The Eastside Seattle suburbs (Bellevue, Kirkland, Redmond) are visibly the highest-income cluster." },
-        ]
-      },
-      {
-        number: "07",
-        title:  "Geographic & Population Mean Centroids",
-        type:   "Centroid Comparison",
-        img:    "../assets/img/population-washington-centroids.png",
-        methods: [
-          { heading: "Concept", text: "A geographic centroid is the geometric center of a polygon — equidistant from all boundaries regardless of where people actually live. A population-weighted mean center is pulled toward where population is concentrated. The gap between the two reveals how asymmetrically population is distributed within each county." },
-          { heading: "Data Source", text: "Geographic centroids calculated from Washington county boundary polygons. Population mean centers calculated using ACS 2020–2024 census tract population data as weights, computed via the Mean Center (weighted) tool in ArcGIS Pro." },
-          { heading: "Key Finding", text: "In most eastern Washington counties, geographic and population centroids nearly coincide — population is fairly evenly distributed across agricultural counties. In western Washington, the gap is substantial — King County's geographic center is in the Cascade foothills, but its population mean center is pulled strongly toward the Seattle metro core on the western edge." },
-          { heading: "Design", text: "Left panel: clean point map showing geographic centroids (blue X) and state mean geometric center (red X). Right panel: urban/rural dichotomy choropleth base (teal/olive) with population mean centers overlaid as orange stars. Two-panel layout enables direct visual comparison of the centroid types." },
-        ]
-      },
-
-      // ── TEMPLATE ──
-      // {
-      //   section: "Optional Section Header",  // omit if continuing same section
-      //   number:  "08",
-      //   title:   "Map Title",
-      //   type:    "Map Type",
-      //   img:     "../assets/img/your-image.png",
-      //   methods: [
-      //     { heading: "Data Source",    text: "..." },
-      //     { heading: "Classification", text: "..." },
-      //     { heading: "Design",         text: "..." },
-      //   ]
-      // },
-    ];
-
-    // ════════════════════════════════════════════════════════════════
-    //  RENDERER
-    // ════════════════════════════════════════════════════════════════
-    const container = document.getElementById('accordion');
-    let html = '';
-    maps.forEach((m, i) => {
-      if (m.section) {
-        html += `<div class="accordion-section-header">${m.section}</div>`;
-      }
-      html += `
-        <div class="accordion-item">
-          <button class="accordion-trigger" id="trigger-${i}" aria-expanded="false"
-                  aria-controls="panel-${i}" onclick="toggle(${i})">
-            <span class="acc-number">${m.number}</span>
-            <span class="acc-title-wrap">
-              <span class="acc-title">${m.title}</span>
-              <span class="acc-subtitle">${m.type}</span>
-            </span>
-            <i class="ti ti-chevron-down acc-chevron" aria-hidden="true"></i>
-          </button>
-          <div class="accordion-panel" id="panel-${i}" role="region" aria-labelledby="trigger-${i}">
-            <div class="panel-image">
-              <img src="${m.img}" alt="${m.title}" loading="lazy"
-                   onclick="openLightbox('${m.img}', '${m.number} — ${m.title}')"
-                   title="Click to enlarge">
-            </div>
-            <div class="panel-text">
-              ${m.methods.map(b => `
-                <div class="method-block">
-                  <h4>${b.heading}</h4>
-                  <p>${b.text}</p>
-                </div>`).join('')}
-            </div>
-          </div>
-        </div>`;
-    });
-    container.innerHTML = html;
-
-    function toggle(i) {
-      const trigger = document.getElementById(`trigger-${i}`);
-      const panel   = document.getElementById(`panel-${i}`);
-      const isOpen  = trigger.classList.contains('open');
-      document.querySelectorAll('.accordion-trigger').forEach(t => { t.classList.remove('open'); t.setAttribute('aria-expanded','false'); });
-      document.querySelectorAll('.accordion-panel').forEach(p => p.classList.remove('open'));
-      if (!isOpen) { trigger.classList.add('open'); trigger.setAttribute('aria-expanded','true'); panel.classList.add('open'); }
-    }
-
-    function openLightbox(src, caption) {
-      document.getElementById('lightbox-img').src = src;
-      document.getElementById('lightbox-img').alt = caption;
-      document.getElementById('lightbox-caption').textContent = caption;
-      document.getElementById('lightbox').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeLightbox(e) {
-      if (e && e.target.tagName === 'IMG') return;
-      document.getElementById('lightbox').classList.remove('open');
-      document.body.style.overflow = '';
-    }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
-
-    const btn = document.getElementById('themeBtn');
-    function applyTheme(dark) { document.documentElement.classList.toggle('dark', dark); btn.textContent = dark ? '◐ light' : '◐ dark'; }
-    btn.addEventListener('click', () => { const d = !document.documentElement.classList.contains('dark'); localStorage.setItem('theme', d ? 'dark' : 'light'); applyTheme(d); });
-    applyTheme(localStorage.getItem('theme') === 'dark');
-  </script>
-</body>
-</html>
+Use Control + Shift + m to toggle the tab key moving focus. Alternatively, use esc then tab to move to the next interactive element on the page.
+ 
