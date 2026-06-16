@@ -82,15 +82,19 @@
           },
           {
             heading: "Data Sources",
-            text: "Precipitation: NOAA Multi-Sensor QPE (MRMS) Stage IV analysis raster, clipped to the storm's effective precipitation footprint. Storm track: IBTrACS (International Best Track Archive for Climate Stewardship), NOAA National Centers for Environmental Information. Track points symbolized by Saffir-Simpson category."
+            text: "Precipitation: NOAA Multi-Sensor QPE (MRMS) hourly rasters, accessed via the Iowa Environmental Mesonet MRMS archive. 168 individual GRIB2 files covering the full duration of Harvey's precipitation event were downloaded, one per hour. Storm track: IBTrACS (International Best Track Archive for Climate Stewardship), NOAA National Centers for Environmental Information. Track points symbolized by Saffir-Simpson category."
           },
           {
-            heading: "Methodology",
-            text: "Two-panel layout: left panel shows the IBTrACS storm track with category-coded symbols overlaid on a basemap; right panel shows the MRMS QPE raster classified into precipitation intensity zones. Both panels share the same Lambert Azimuthal Equal Area projection (Central Meridian: -83.216°, Latitude of Origin: 33.569°) centered on the Gulf Coast region. Raster resampled and reprojected using GDAL."
+            heading: "GDAL Pipeline",
+            text: "Each of the 168 hourly GRIB2 files was reprojected from the native MRMS Lambert Conformal Conic CRS to Lambert Azimuthal Equal Area (Central Meridian: -83.216°, Latitude of Origin: 33.569°) using gdalwarp with bilinear resampling. The reprojected hourly rasters were then summed to a single storm-total accumulation raster using gdal_calc.py, producing a continuous precipitation surface in inches. The final raster was clipped to the storm footprint extent and classified into intensity zones in QGIS."
+          },
+          {
+            heading: "Map Layout",
+            text: "Two-panel layout: left panel shows the IBTrACS storm track with Saffir-Simpson category-coded symbols overlaid on a light basemap, showing Harvey's Gulf approach, landfall near Rockport, and stall loop over Houston. Right panel shows the storm-total MRMS accumulation raster classified into precipitation intensity zones. The stall signature is immediately legible as a concentrated bull's-eye of extreme accumulation centered on the Houston metro."
           },
           {
             heading: "Design",
-            text: "QPE raster uses a diverging blue-to-red palette emphasizing extreme accumulation zones. The stall signature over Houston is immediately legible as a concentrated bull's-eye of extreme precipitation. Track symbols progress from tropical depression (small open circles) through Category 4 (large filled) using a blue-to-red categorical scheme."
+            text: "QPE raster uses a blue-to-red diverging palette stepping through accumulation thresholds, with the deepest reds reserved for the >40 inch accumulation zone near Houston. Track symbols progress from small open circles (tropical depression) through large filled markers (Category 4) using a matching blue-to-red categorical scheme, tying the two panels together visually."
           },
         ]
       },
@@ -110,7 +114,7 @@
           },
           {
             heading: "Methodology",
-            text: "Same pipeline as Harvey: Lambert Azimuthal Equal Area projection (Central Meridian: -83.216°, Latitude of Origin: 33.569°), GDAL reprojection and raster classification, IBTrACS track symbolized by Saffir-Simpson category. The shared projection and methodology makes the two maps directly comparable despite covering different regions."
+            text: "The same GDAL pipeline used for Harvey was applied to Helene's hourly MRMS GRIB2 archive: per-hour reprojection to Lambert Azimuthal Equal Area, summation via gdal_calc.py to a storm-total accumulation raster, clipping and classification in QGIS. The shared projection, color ramp, and classification thresholds make the two maps directly comparable despite covering different geographic regions and storm behaviors."
           },
           {
             heading: "Contrast with Harvey",
